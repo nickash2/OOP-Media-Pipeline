@@ -2,3 +2,4 @@ librosa
 Pillow
 numpy
 matplotlib
+pre-commit
