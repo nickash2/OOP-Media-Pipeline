@@ -1,9 +1,11 @@
-class AbstractDataset:
+class AbstractDataset():
     def __init__(self, root):
-        self.root = root
+        super().__init__(root)
+        self.labels = self._load_labels()
+
+    def _load_labels(self):
+        raise NotImplementedError  # implement
 
     def __len__(self):
-        raise NotImplementedError("Subclasses must implement __len__ method")
-
-    def __getitem__(self, index):
-        raise NotImplementedError("Subclasses must implement __getitem__ method")
+        # change this to make unlabeled dataset to work as well
+        return len(self.labels)
