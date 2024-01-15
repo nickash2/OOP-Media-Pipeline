@@ -3,3 +3,4 @@ Pillow
 numpy
 matplotlib
 pre-commit
+scikit-learn

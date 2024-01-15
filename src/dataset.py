@@ -1,7 +1,11 @@
-from abstract_dataset import AbstractDataset
-import os
 import csv
+import os
 from typing import Dict
+import librosa
+import numpy as np
+from PIL import Image
+
+from abstract_dataset import AbstractDataset
 
 
 class LabeledDataset(AbstractDataset):
@@ -29,11 +33,15 @@ class LabeledDataset(AbstractDataset):
         Returns:
         dict: A dictionary mapping filenames to labels.
         """
-        with open(self.label_file, 'r') as f:
+        with open(self.label_file, "r") as f:
             reader = csv.reader(f)
             # Dictionary where the keys are filenames and the values are labels
             labels = {rows[0]: rows[1] for rows in reader}
         return labels
+
+    def __getitem__(self, idx):
+        if self.data is not None:
+            return self.data[idx], self.labels[idx]
 
 
 class UnlabeledDataset(AbstractDataset):
@@ -75,3 +83,15 @@ class HierarchicalLabeledDataset(AbstractDataset):
                 for data_file in os.listdir(class_path):
                     labels[data_file] = class_folder
         return labels
+
+
+class ImageDataset(AbstractDataset):
+    def _load_data(self, file):
+        img = Image.open(os.path.join(self.root, file))
+        return np.array(img.convert("RGB"))
+
+
+class AudioDataset(AbstractDataset):
+    def _load_data(self, file):
+        audio, sr = librosa.load(os.path.join(self.root, file))
+        return audio, sr
