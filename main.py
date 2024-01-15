@@ -2,11 +2,11 @@ import os
 import sys
 
 sys.path.append(os.getcwd() + "/src/")
-# from example import ExampleClass
-
+from dataset import LabeledDataset 
 
 def main():
-    print("Hello World!")
+    dataset = LabeledDataset(root="root", data_type="image", label_file="labels.csv")
+    print(dataset.load_data_eager())
 
 
 if __name__ == "__main__":

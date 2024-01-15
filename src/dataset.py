@@ -1,10 +1,6 @@
 import csv
 import os
 from typing import Dict
-import librosa
-import numpy as np
-from PIL import Image
-
 from abstract_dataset import AbstractDataset
 
 
@@ -14,16 +10,17 @@ class LabeledDataset(AbstractDataset):
     The labels are loaded from a separate CSV file.
     """
 
-    def __init__(self, root: str, label_file: str) -> None:
+    def __init__(self, root: str, label_file: str, data_type: str) -> None:
         """
         Initialize a LabeledDataset.
 
         Parameters:
         root (str): The path to the directory containing the data files.
         label_file (str): The path to the CSV file containing the labels.
+        data_type (str): The type of data in the dataset.
         """
         self.label_file = label_file
-        super().__init__(root)
+        super().__init__(root, data_type)
 
     def _load_labels(self) -> Dict[str, str]:
         """
@@ -33,7 +30,8 @@ class LabeledDataset(AbstractDataset):
         Returns:
         dict: A dictionary mapping filenames to labels.
         """
-        with open(self.label_file, "r") as f:
+        path = os.path.join(self.root, self.label_file)
+        with open(path, "r") as f:
             reader = csv.reader(f)
             # Dictionary where the keys are filenames and the values are labels
             labels = {rows[0]: rows[1] for rows in reader}
@@ -48,6 +46,16 @@ class UnlabeledDataset(AbstractDataset):
     """
     A dataset where each data point does not have a label.
     """
+
+    def __init__(self, root: str, data_type: str) -> None:
+        """
+        Initialize an UnlabeledDataset.
+
+        Parameters:
+        root (str): The path to the directory containing the data files.
+        data_type (str): The type of data in the dataset.
+        """
+        super().__init__(root, data_type)
 
     def _load_labels(self) -> Dict[str, None]:
         """
@@ -67,6 +75,15 @@ class HierarchicalLabeledDataset(AbstractDataset):
     Each subdirectory in the root directory represents a class,
     and the files in each subdirectory are the data points for that class.
     """
+    def __init__(self, root: str, data_type: str) -> None:
+        """
+        Initialize a HierarchicalLabeledDataset.
+
+        Parameters:
+        root (str): The path to the directory containing the data files.
+        data_type (str): The type of data in the dataset.
+        """
+        super().__init__(root, data_type)
 
     def _load_labels(self) -> Dict[str, str]:
         """
@@ -83,15 +100,3 @@ class HierarchicalLabeledDataset(AbstractDataset):
                 for data_file in os.listdir(class_path):
                     labels[data_file] = class_folder
         return labels
-
-
-class ImageDataset(AbstractDataset):
-    def _load_data(self, file):
-        img = Image.open(os.path.join(self.root, file))
-        return np.array(img.convert("RGB"))
-
-
-class AudioDataset(AbstractDataset):
-    def _load_data(self, file):
-        audio, sr = librosa.load(os.path.join(self.root, file))
-        return audio, sr
