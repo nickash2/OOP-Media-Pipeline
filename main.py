@@ -2,11 +2,15 @@ import os
 import sys
 
 sys.path.append(os.getcwd() + "/src/")
-from dataset import LabeledDataset 
+from dataset import UnlabeledDataset, HierarchicalDataset, LabeledDataset
+
 
 def main():
-    dataset = LabeledDataset(root="root", data_type="image", label_file="labels.csv")
-    print(dataset.load_data_eager())
+    labeled = LabeledDataset(root="data/labeled/",label_file="labels.csv", data_type="image")
+    # miu = HierarchicalLabeledDataset(root="data/hierarchical/", data_type="image")
+    # miu.load_data_eager()
+    print(labeled[5])
+    
 
 
 if __name__ == "__main__":
