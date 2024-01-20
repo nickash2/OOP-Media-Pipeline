@@ -35,9 +35,9 @@ class Dataset(AbstractDataset):
         Get the length of the dataset.
 
         Returns:
-        int: The number of data points in the dataset.
+        int: The number of data files in the dataset.
         """
-        return len(self.labels)
+        return len(self.data_paths)
 
     def __getitem__(self, idx: int) -> Any:
         """
@@ -150,6 +150,10 @@ class LabeledDataset(Dataset):
             labels = {rows[0]: rows[1] for rows in reader}
         return labels
 
+    def __getitem__(self, idx: int) -> Tuple[Any, str]:
+        values = super().__getitem__(idx)
+        return values, list(self.labels.values())[idx]
+
     def load_data_eager(self):
         self.data = {}
         for dir_path in self.data_paths:
@@ -228,16 +232,40 @@ class HierarchicalDataset(Dataset):
                     labels[data_file] = class_folder
         return labels
 
+    # TODO: Implement __getitem__ for HierarchicalDataset
+    def __getitem__(self, idx: int) -> Any:
+        """
+        Get a specific data point from the dataset.
+
+        Parameters:
+        idx (int): The index of the data point to retrieve.
+
+        Returns:
+        Any: The data point at the specified index.
+        """
+        if self.data is None:
+            self.load_data_eager()
+
+        dir_names = list(self.data.keys())
+
+        if isinstance(idx, tuple):
+            dir_idx, file_idx = idx
+            idx_labels = self.labels[dir_names[dir_idx]][file_idx]
+            return self.data[dir_names[dir_idx]][file_idx], idx_labels
+        else:
+            return self.data[dir_names[idx]], self.labels[dir_names[idx]]
+
     def load_data_eager(self):
         self.data = {}
         for class_folder in os.listdir(self.root):
             class_path = os.path.join(self.root, class_folder)
             if os.path.isdir(class_path):
                 # If current entry is a directory, use its name as the label
+                self.data[class_folder] = []
                 for data_file in os.listdir(class_path):
                     file_path = os.path.join(class_path, data_file)
-                    self.data[data_file] = self._load_data(file_path)
-        return self.data, self.labels[data_file]
+                    self.data[class_folder].append(self._load_data(file_path))
+        return self.data, self.labels
 
     def load_data_lazy(self):
         self.data = {}
