@@ -1,9 +1,12 @@
 import numpy as np
+from PIL import Image
+import librosa
 
 
 class BatchLoader:
     def __init__(self,
                  batch_size: int,
+                 file_type: str,
                  shuffle: bool = True,
                  data: list = None,
                  sequential: bool = False):
@@ -16,9 +19,7 @@ class BatchLoader:
         self.indices = np.arange(len(self.data))
 
     def _randomize_batches(self):
-        batches = np.array_split(self.data, self.num_batches)
-        np.random.shuffle(batches)
-        self.data = np.concatenate(batches)
+        np.random.shuffle(self.indices)
 
     def create_batches(self, discard_last_batch: bool = False):
         if self.shuffle and not self.sequential:
@@ -28,11 +29,10 @@ class BatchLoader:
             self.num_batches += 1
 
         if self.sequential:
-            self.batches = np.array([self.data[i:i+self.batch_size]
-                                    for i in range(0, len(self.data),
-                                    self.batch_size)])
+            self.batches = [self.indices[i:i+self.batch_size]
+                            for i in range(0, len(self.data), self.batch_size)]
         else:
-            self.batches = np.array_split(self.data, self.num_batches)
+            self.batches = np.array_split(self.indices, self.num_batches)
 
         return self.batches
 
@@ -49,9 +49,18 @@ class BatchLoader:
         if self.current_index >= len(self.batches):
             raise StopIteration
 
-        batch_data = self.batches[self.current_index]
+        batch_indices = self.batches[self.current_index]
+        batch_data = [self.load_data(i) for i in batch_indices]
+
         self.current_index += 1
         return batch_data
+
+    def _load_data(self, index, file_type):
+        if (file_type == 'image'):
+            return Image.open(self.data[index])
+        elif (file_type == 'audio'):
+            return librosa.load(self.data[index])
+
 
 # batch = BatchLoader(batch_size=2, data=[1,2,3,4,5,6,7,8,9,10])
 
