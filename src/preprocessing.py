@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from PIL import Image
 import numpy as np
+
 
 class AbtractPreprocessor(ABC):
     def __init__(self, hyperparameters):
@@ -13,6 +13,7 @@ class AbtractPreprocessor(ABC):
     @abstractmethod
     def _preprocess(self, text):
         pass
+
 
 class CentreCrop(AbtractPreprocessor):
     def __init__(self, width, height):
@@ -35,4 +36,3 @@ class CentreCrop(AbtractPreprocessor):
         bottom = min(height, top + self.height_param)
 
         return np.array(img.crop((left, top, right, bottom)).convert('RGB'))
-
