@@ -18,21 +18,29 @@ class AbtractPreprocessor(ABC):
 
 # Images
 class CentreCrop(AbtractPreprocessor):
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int) -> None:
+        if not isinstance(width, int) or not isinstance(height, int):
+            raise TypeError("width and height must be integers")
+        if width <= 0 or height <= 0:
+            raise ValueError("width and height must be greater than zero")
+
         self.width_param = width
         self.height_param = height
 
-    def __call__(self, img):
+    def __call__(self, img: Image) -> Image:
+        if not isinstance(img, Image):
+            raise TypeError("img must be an Image (PIL) object")
+
         self.real_width, self.real_height = img.size
         self.img = self._preprocess(Image.fromarray(img))
         return self.img
 
-    def _check_valid_size(self, img):
+    def _check_valid_size(self, img: Image) -> bool:
         if (self.width_param < self.real_width and
                 self.height_param < self.real_height):
             return True
 
-    def _preprocess(self, img):
+    def _preprocess(self, img: Image) -> np.ndarray:
         if self._check_valid_size(img):
             return np.array(img)
 
@@ -45,10 +53,10 @@ class CentreCrop(AbtractPreprocessor):
 
 
 class RandomCrop(CentreCrop):
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int):
         super().__init__(width, height)
 
-    def _preprocess(self, img):
+    def _preprocess(self, img: Image) -> np.ndarray:
         if self._check_valid_size(img):
             return np.array(img)
 
