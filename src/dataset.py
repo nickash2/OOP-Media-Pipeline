@@ -1,6 +1,6 @@
 import csv
 import os
-from typing import Dict, Tuple, Any, Generator
+from typing import Dict, Tuple, Any, Generator, List
 from abstract_dataset import AbstractDataset
 import librosa
 import numpy as np
@@ -63,7 +63,7 @@ class Dataset(AbstractDataset):
         self.data = {}
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
-                for file_name in os.listdir(dir_path):
+                for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
         return self.data
@@ -77,7 +77,7 @@ class Dataset(AbstractDataset):
         """
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
-                for file_name in os.listdir(dir_path):
+                for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     yield self._load_data(file_path)
 
@@ -91,10 +91,10 @@ class Dataset(AbstractDataset):
         Returns:
         Any: The loaded data point.
         """
-        if self.data_type == 'image':
+        if self.data_type == "image":
             img = Image.open(file_path)
-            return np.array(img.convert("RGB"))
-        elif self.data_type == 'audio':
+            return np.array(img.convert("RGB"))  # use rgb
+        elif self.data_type == "audio":
             audio, sr = librosa.load(file_path)
             return (audio, sr)
 
@@ -158,7 +158,7 @@ class LabeledDataset(Dataset):
         self.data = {}
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
-                for file_name in os.listdir(dir_path):
+                for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
         return self.data, self.labels[file_name]
@@ -166,7 +166,7 @@ class LabeledDataset(Dataset):
     def load_data_lazy(self):
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
-                for file_name in os.listdir(dir_path):
+                for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
                     yield self.data[file_name], self.labels[file_name]
@@ -216,64 +216,51 @@ class HierarchicalDataset(Dataset):
         """
         super().__init__(root, data_type)
 
-    def _load_labels(self) -> Dict[str, str]:
-        """
-        Load labels based on the directory structure.
-
-        Returns:
-        dict: A dictionary mapping filenames to labels.
-        """
+    def _load_labels(self) -> Dict[str, List[str]]:
         labels = {}
         for class_folder in os.listdir(self.root):
             class_path = os.path.join(self.root, class_folder)
             if os.path.isdir(class_path):
-                # If current entry is a directory, use its name as the label
-                for data_file in os.listdir(class_path):
-                    labels[data_file] = class_folder
+                labels[class_folder] = sorted(os.listdir(class_path))
         return labels
 
-    # TODO: Implement __getitem__ for HierarchicalDataset
-    def __getitem__(self, idx: int) -> Any:
-        """
-        Get a specific data point from the dataset.
-
-        Parameters:
-        idx (int): The index of the data point to retrieve.
-
-        Returns:
-        Any: The data point at the specified index.
-        """
+    # TODO: catch indexerror
+    def __getitem__(self, idx) -> Tuple[np.ndarray, str]:
         if self.data is None:
             self.load_data_eager()
-
-        dir_names = list(self.data.keys())
-
+        self.keys = list(self.data.keys())
+        # If idx is a tuple, treat the first element as the directory index
+        # and the second element as the data point index within that directory.
         if isinstance(idx, tuple):
-            dir_idx, file_idx = idx
-            idx_labels = self.labels[dir_names[dir_idx]][file_idx]
-            return self.data[dir_names[dir_idx]][file_idx], idx_labels
+
+            directory_index, data_point_index = idx
+            directory_key = self.keys[directory_index]
+            # returns a tuple of the data point and the label
+            return self.data[directory_key][data_point_index], directory_key
+
         else:
-            return self.data[dir_names[idx]], self.labels[dir_names[idx]]
+            # If idx is not a tuple, it is a direct index to the data points.
+            return list(self.data.values())[idx]
 
     def load_data_eager(self):
         self.data = {}
-        for class_folder in os.listdir(self.root):
+        for class_folder in sorted(os.listdir(self.root)):
             class_path = os.path.join(self.root, class_folder)
             if os.path.isdir(class_path):
                 # If current entry is a directory, use its name as the label
                 self.data[class_folder] = []
-                for data_file in os.listdir(class_path):
+                for data_file in sorted(os.listdir(class_path)):
                     file_path = os.path.join(class_path, data_file)
                     self.data[class_folder].append(self._load_data(file_path))
         return self.data, self.labels
 
     def load_data_lazy(self):
         self.data = {}
-        for class_folder in os.listdir(self.root):
+        for class_folder in sorted(os.listdir(self.root)):
             class_path = os.path.join(self.root, class_folder)
             if os.path.isdir(class_path):
                 # If current entry is a directory, use its name as the label
-                for data_file in os.listdir(class_path):
+                for data_file in sorted(os.listdir(class_path)):
                     file_path = os.path.join(class_path, data_file)
                     self.data[data_file] = self._load_data(file_path)
                     yield self.data[data_file], self.labels[data_file]
