@@ -1,6 +1,7 @@
 import numpy as np
 from PIL import Image
 import librosa
+from typing import List, Tuple
 
 
 class BatchLoader:
@@ -9,7 +10,17 @@ class BatchLoader:
                  file_type: str,
                  shuffle: bool = True,
                  data: list = None,
-                 sequential: bool = False):
+                 sequential: bool = False) -> None:
+        if not isinstance(batch_size, int):
+            raise TypeError("batch_size must be an integer")
+        if not isinstance(file_type, str):
+            raise TypeError("file_type must be a string")
+        if not isinstance(shuffle, bool):
+            raise TypeError("shuffle must be a boolean")
+        if not isinstance(sequential, bool):
+            raise TypeError("sequential must be a boolean")
+        if data is not None and not isinstance(data, list):
+            raise TypeError("data must be a list")
         self.batch_size = batch_size
         self.sequential = sequential
         self.shuffle = shuffle
@@ -18,10 +29,10 @@ class BatchLoader:
         self.current_index = 0
         self.indices = np.arange(len(self.data))
 
-    def _randomize_batches(self):
+    def _randomize_batches(self) -> None:
         np.random.shuffle(self.indices)
 
-    def create_batches(self, discard_last_batch: bool = False):
+    def create_batches(self, discard_last_batch: bool = False) -> np.ndarray:
         if self.shuffle and not self.sequential:
             self._randomize_batches()
 
@@ -36,16 +47,16 @@ class BatchLoader:
 
         return self.batches
 
-    def __len__(self):
+    def __len__(self) -> int:
         if len(self.data) % self.batch_size != 0:
             self.num_batches += 1
         return self.num_batches
 
-    def __iter__(self):
+    def __iter__(self) -> 'BatchLoader':
         self.current_index = 0
         return self
 
-    def __next__(self):
+    def __next__(self) -> List[np.ndarray]:
         if self.current_index >= len(self.batches):
             raise StopIteration
 
@@ -55,18 +66,10 @@ class BatchLoader:
         self.current_index += 1
         return batch_data
 
-    def _load_data(self, index, file_type):
+    def _load_data(self, index: int,
+                   file_type: str
+                   ) -> Image or Tuple[np.ndarray, int]:
         if (file_type == 'image'):
             return Image.open(self.data[index])
         elif (file_type == 'audio'):
             return librosa.load(self.data[index])
-
-
-# batch = BatchLoader(batch_size=2, data=[1,2,3,4,5,6,7,8,9,10])
-
-# batch.create_batches(discard_last_batch=True)
-
-# print(len(batch))
-# # print(batch.batches[2])
-# for i in batch:
-#     print(i)
