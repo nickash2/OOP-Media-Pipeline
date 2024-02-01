@@ -17,9 +17,17 @@ class Dataset(AbstractDataset):
         root (str): The path to the directory containing the data files.
         data_type (str): The type of data in the dataset.
         """
+        if not isinstance(root, str):
+            raise TypeError("root must be a string")
+        if not isinstance(data_type, str):
+            raise TypeError("data_type must be a string")
+
         super().__init__(root, data_type)
-        self.data_paths = [os.path.join(root, file)
-                           for file in os.listdir(root)]
+        try:
+            self.data_paths = [os.path.join(root, file)
+                               for file in os.listdir(root)]
+        except FileNotFoundError:
+            raise FileNotFoundError(f"No such directory: {root}")
 
     def _load_labels(self) -> Dict[str, Any]:
         """
@@ -49,11 +57,13 @@ class Dataset(AbstractDataset):
         Returns:
         Any: The data point at the specified index.
         """
+        if not isinstance(idx, int):
+            raise TypeError("idx must be an integer")
         if self.data is None:
             self.load_data_eager()
         return list(self.data.values())[idx]
 
-    def load_data_eager(self) -> Dict[str, Any]:
+    def load_data_eager(self) -> Dict[str, np.array]:
         """
         Load all data points in the dataset eagerly.
 
@@ -68,7 +78,7 @@ class Dataset(AbstractDataset):
                     self.data[file_name] = self._load_data(file_path)
         return self.data
 
-    def load_data_lazy(self) -> Generator[Any, None, None]:
+    def load_data_lazy(self) -> Generator:
         """
         Load data points in the dataset lazily.
 
@@ -81,7 +91,7 @@ class Dataset(AbstractDataset):
                     file_path = os.path.join(dir_path, file_name)
                     yield self._load_data(file_path)
 
-    def _load_data(self, file_path: str) -> Any:
+    def _load_data(self, file_path: str) -> np.array | Tuple[np.array, int]:
         """
         Load a data point from a file.
 
@@ -98,7 +108,7 @@ class Dataset(AbstractDataset):
             audio, sr = librosa.load(file_path)
             return (audio, sr)
 
-    def split(self, ratio: float) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    def split(self, ratio: float) -> Tuple[np.array, np.array]:
         """
         Split the dataset into training and testing sets.
 
@@ -112,8 +122,8 @@ class Dataset(AbstractDataset):
             self.load_data_eager()
         files = list(self.data.keys())
         train_files, test_files = train_test_split(files, test_size=ratio)
-        train_data = {file: self.data[file] for file in train_files}
-        test_data = {file: self.data[file] for file in test_files}
+        train_data = [self.data[file] for file in train_files]
+        test_data = [self.data[file] for file in test_files]
         return train_data, test_data
 
 
@@ -144,17 +154,22 @@ class LabeledDataset(Dataset):
         dict: A dictionary mapping filenames to labels.
         """
         path = os.path.join(self.root, self.label_file)
-        with open(path, "r") as f:
-            reader = csv.reader(f)
-            # Dictionary where the keys are filenames and the values are labels
-            labels = {rows[0]: rows[1] for rows in reader}
+        try:
+            with open(path, "r") as f:
+                reader = csv.reader(f)
+        # Dictionary where the keys are filenames and the values are labels
+                labels = {rows[0]: rows[1] for rows in reader}
+        except FileNotFoundError:
+            raise FileNotFoundError(f"No such file: {path}")
         return labels
 
-    def __getitem__(self, idx: int) -> Tuple[Any, str]:
+    def __getitem__(self, idx: int) -> Tuple[np.array, List[str]]:
+        if not isinstance(idx, int):
+            raise TypeError("idx must be an integer")
         values = super().__getitem__(idx)
         return values, list(self.labels.values())[idx]
 
-    def load_data_eager(self):
+    def load_data_eager(self) -> Tuple[Dict[str, np.array], Dict[str, str]]:
         self.data = {}
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
@@ -163,7 +178,7 @@ class LabeledDataset(Dataset):
                     self.data[file_name] = self._load_data(file_path)
         return self.data, self.labels[file_name]
 
-    def load_data_lazy(self):
+    def load_data_lazy(self) -> Generator[Tuple[np.array, str], None, None]:
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
@@ -218,14 +233,23 @@ class HierarchicalDataset(Dataset):
 
     def _load_labels(self) -> Dict[str, List[str]]:
         labels = {}
-        for class_folder in os.listdir(self.root):
-            class_path = os.path.join(self.root, class_folder)
-            if os.path.isdir(class_path):
-                labels[class_folder] = sorted(os.listdir(class_path))
+        try:
+            for class_folder in os.listdir(self.root):
+                class_path = os.path.join(self.root, class_folder)
+                if os.path.isdir(class_path):
+                    labels[class_folder] = sorted(os.listdir(class_path))
+        except FileNotFoundError:
+            raise FileNotFoundError(f"No such directory: {self.root}")
         return labels
 
-    # TODO: catch indexerror
-    def __getitem__(self, idx) -> Tuple[np.ndarray, str]:
+    def __getitem__(self, idx: int) -> Tuple[np.ndarray, str]:
+        if not isinstance(idx, (int, tuple)):
+            raise TypeError("idx must be an integer or a tuple of integers")
+        if isinstance(idx, tuple) and not all(isinstance(i, int) for i in idx):
+            raise TypeError("all elements of idx must be integers")
+        if isinstance(idx, int) and not (0 <= idx < len(self.data)):
+            raise IndexError("idx out of range")
+
         if self.data is None:
             self.load_data_eager()
         self.keys = list(self.data.keys())
@@ -242,7 +266,7 @@ class HierarchicalDataset(Dataset):
             # If idx is not a tuple, it is a direct index to the data points.
             return list(self.data.values())[idx]
 
-    def load_data_eager(self):
+    def load_data_eager(self) -> Tuple[np.ndarray, List[str]]:
         self.data = {}
         for class_folder in sorted(os.listdir(self.root)):
             class_path = os.path.join(self.root, class_folder)
@@ -254,7 +278,7 @@ class HierarchicalDataset(Dataset):
                     self.data[class_folder].append(self._load_data(file_path))
         return self.data, self.labels
 
-    def load_data_lazy(self):
+    def load_data_lazy(self) -> Generator[Tuple[np.ndarray, str], None, None]:
         self.data = {}
         for class_folder in sorted(os.listdir(self.root)):
             class_path = os.path.join(self.root, class_folder)
