@@ -242,7 +242,14 @@ class HierarchicalDataset(Dataset):
             raise FileNotFoundError(f"No such directory: {self.root}")
         return labels
 
+    def __len__(self) -> int:
+        if self.data is None:
+            self.load_data_eager()
+        return sum(len(data_points) for data_points in self.data.values())
+
     def __getitem__(self, idx: int) -> Tuple[np.ndarray, str]:
+        if self.data is None:
+            self.load_data_eager()
         if not isinstance(idx, (int, tuple)):
             raise TypeError("idx must be an integer or a tuple of integers")
         if isinstance(idx, tuple) and not all(isinstance(i, int) for i in idx):
@@ -250,8 +257,6 @@ class HierarchicalDataset(Dataset):
         if isinstance(idx, int) and not (0 <= idx < len(self.data)):
             raise IndexError("idx out of range")
 
-        if self.data is None:
-            self.load_data_eager()
         self.keys = list(self.data.keys())
         # If idx is a tuple, treat the first element as the directory index
         # and the second element as the data point index within that directory.
@@ -264,7 +269,7 @@ class HierarchicalDataset(Dataset):
 
         else:
             # If idx is not a tuple, it is a direct index to the data points.
-            return list(self.data.values())[idx]
+            return list(self.data.values())[idx], self.keys[idx]
 
     def load_data_eager(self) -> Tuple[np.ndarray, List[str]]:
         self.data = {}
