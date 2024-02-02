@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
+import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+import librosa
 
 
 class AbtractPreprocessor(ABC):
@@ -71,25 +73,38 @@ class RandomCrop(CentreCrop):
 
 # Pitch shift
 class PitchShift(AbtractPreprocessor):
-    def __init__(self, hyperparameters):
-        pass
+    def __init__(self, pitch_factor: float, sample_rate: float):
+        self.pitch_factor = pitch_factor
+        self.sample_rate = sample_rate
 
     def __call__(self, audio):
         self.audio = self._preprocess(audio)
         return self.audio
 
     def _preprocess(self, audio):
-        pass
+        shifted = librosa.effects.pitch_shift(
+            y=audio, sr=self.sample_rate, n_steps=self.pitch_factor)
+        return shifted
 
 
 # mel spectrogram
 class MelSpectrogram(AbtractPreprocessor):
-    def __init__(self, hyperparameters):
-        pass
+    def __init__(self, sample_rate: float, file_name: str = "",):
+        self.sample_rate = sample_rate
+        self.file_name = file_name
 
     def __call__(self, audio):
         self.audio = self._preprocess(audio)
         return self.audio
 
     def _preprocess(self, audio):
-        pass
+        mel = librosa.feature.melspectrogram(y=audio, sr=self.sample_rate)
+        plt.figure(figsize=(10, 4))
+        librosa.display.specshow(librosa.power_to_db(mel, ref=np.max),
+                                 y_axis='mel', fmax=8000, x_axis='time')
+        plt.colorbar(format='%+2.0f dB')
+        plt.title('Mel spectrogram')
+        plt.tight_layout()
+        if self.file_name:
+            plt.savefig(self.file_name)
+        return mel
