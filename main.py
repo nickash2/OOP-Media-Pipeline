@@ -1,22 +1,23 @@
-# from src.preprocessing import PitchShift, MelSpectrogram
 import os
 import sys
-# import librosa
+
+from PIL import Image
+
 sys.path.append(os.getcwd() + "/src/")
-# from dataset import HierarchicalDataset, LabeledDataset
+from dataset import LabeledDataset
 
 
 def main():
-    # hier = HierarchicalDataset(root="data/hierarchical", data_type="image")
-    # print(hier[0])
-    # file, sr = librosa.load("negawatt.wav")
-    # shifted = PitchShift(pitch_factor=2.0, sample_rate=sr)
-    # shifted_file = shifted(file)
-    # sf.write("negashift.wav", shifted_file, sr, format="wav")
-    # mel = MelSpectrogram(sample_rate=sr, file_name="mel.png")
-    # mel(file)
+    age_dataset = LabeledDataset(
+        root="datasets/age-estimation-classification",
+        label_file="train.csv",
+        data_type="image",
+    )
+    age_dataset.load_data_eager()
+    img, label = age_dataset[2]
 
-    pass
+    print(Image.fromarray(img).size)
+    print(label)
 
 
 if __name__ == "__main__":

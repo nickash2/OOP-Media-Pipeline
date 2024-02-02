@@ -139,7 +139,7 @@ new_data = my_preproc_tech(old_data)
 - [x] All the hyperparameters of these techniques---i.e., arguments that the user can specify for the transformations---**should be passed as arguments in the initialization**. The preprocessing technique, when called, **should have only data as arguments**, as in the snippet above.
 
 - [x] **Two classes** need to be for images.
-- [ ] **Two classes** need to be for audio.
+- [x] **Two classes** need to be for audio.
 - [ ] In addition, you should create a datatype-agnostic preprocessing class that is able to sequentially perform multiple preprocessing steps.
       See the following subsections for more info.
 
@@ -195,7 +195,7 @@ In the main, you should showcase the usage of your library.
 
 Notice that, for images and audio, showing means actually plotting some sample images, while, for audio, it refers to playing some sample audio tracks.
 
-1. [ ] Create an image dataset and an audio dataset. Show how you can access your data. You may also plot some images using the `matplotlib.pyplot.imshow` method.
+1. [x] Create an image dataset and an audio dataset. Show how you can access your data. You may also plot some images using the `matplotlib.pyplot.imshow` method.
 
 - Showcase a dataset with and without labels.
 - Showcase a dataset for classification and regression.

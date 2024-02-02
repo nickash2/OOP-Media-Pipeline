@@ -1,4 +1,3 @@
-import csv
 import os
 from typing import Dict, Tuple, Any, Generator, List
 from abstract_dataset import AbstractDataset
@@ -6,6 +5,7 @@ import librosa
 import numpy as np
 from PIL import Image
 from sklearn.model_selection import train_test_split
+import pandas as pd
 
 
 class Dataset(AbstractDataset):
@@ -155,13 +155,16 @@ class LabeledDataset(Dataset):
         """
         path = os.path.join(self.root, self.label_file)
         try:
-            with open(path, "r") as f:
-                reader = csv.reader(f)
-        # Dictionary where the keys are filenames and the values are labels
-                labels = {rows[0]: rows[1] for rows in reader}
+            with open(path, "r"):
+                df = pd.read_csv(path, header=None)
+                # Remove the .jpg extension from the first column
+                df[0] = df[0].str.replace('.jpg', '')
+                # Sort the DataFrame by the first column
+                df = df.sort_values(by=[0])
+                # Convert the DataFrame to a dictionary and return it
+                return df.set_index(0)[1].to_dict()
         except FileNotFoundError:
             raise FileNotFoundError(f"No such file: {path}")
-        return labels
 
     def __getitem__(self, idx: int) -> Tuple[np.array, List[str]]:
         if not isinstance(idx, int):
@@ -176,7 +179,8 @@ class LabeledDataset(Dataset):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
-        return self.data, self.labels[file_name]
+        file_name_without_extension = file_name.replace('.jpg', '')
+        return self.data, self.labels[file_name_without_extension]
 
     def load_data_lazy(self) -> Generator[Tuple[np.array, str], None, None]:
         for dir_path in self.data_paths:
