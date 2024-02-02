@@ -89,7 +89,7 @@ You will need to implement a hierarchy of classes to manage datasets.
 
 - [x] The datasets should have a method for **splitting** the data (and labels, if applicable) into training and test sets. The user should be able to split the data by specifying the percentage of data to be used for training. This functionality should return two datasets as output (i.e. `train` and `test`).
 
-- [ ] You should create at least two datasets with these characteristics, one handling **images**, the other handling **audio files**.
+- [x] You should create at least two datasets with these characteristics, one handling **images**, the other handling **audio files**.
 
   * For handling images, you can use one of many Python libraries for image processing, such as [Pillow](https://pillow.readthedocs.io/en/stable/) or [OpenCV](https://opencv.org/). Notice that OpenCV, while faster than Pillow, is using the BGR format for images, while Pillow is using the standard RGB format. You should be careful that images loaded into the datasets are in the RGB format.
 
