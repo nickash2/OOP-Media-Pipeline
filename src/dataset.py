@@ -76,7 +76,7 @@ class Dataset(AbstractDataset):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
-        return self.data
+        return np.array(list(self.data.values()))
 
     def load_data_lazy(self) -> Generator:
         """
@@ -124,7 +124,7 @@ class Dataset(AbstractDataset):
         train_files, test_files = train_test_split(files, test_size=ratio)
         train_data = [self.data[file] for file in train_files]
         test_data = [self.data[file] for file in test_files]
-        return train_data, test_data
+        return np.array(train_data), np.array(test_data)
 
 
 class LabeledDataset(Dataset):
@@ -195,7 +195,7 @@ class LabeledDataset(Dataset):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
         file_name_without_extension = file_name.replace(".jpg", "")
-        return self.data, self.labels[file_name_without_extension]
+        return np.array(list(self.data.values())), self.labels[file_name_without_extension]
 
     def load_data_lazy(self) -> Generator[Tuple[np.array, str], None, None]:
         """
@@ -209,7 +209,7 @@ class LabeledDataset(Dataset):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
-                    yield self.data[file_name], self.labels[file_name]
+                    yield np.array(list(self.data[file_name])), self.labels[file_name]
 
 
 class UnlabeledDataset(Dataset):
@@ -345,7 +345,7 @@ class HierarchicalDataset(Dataset):
                 for data_file in sorted(os.listdir(class_path)):
                     file_path = os.path.join(class_path, data_file)
                     self.data[class_folder].append(self._load_data(file_path))
-        return self.data, self.labels
+        return np.array(self.data), self.labels
 
     def load_data_lazy(self) -> Generator[Tuple[np.ndarray, str], None, None]:
         """
@@ -363,4 +363,4 @@ class HierarchicalDataset(Dataset):
                 for data_file in sorted(os.listdir(class_path)):
                     file_path = os.path.join(class_path, data_file)
                     self.data[data_file] = self._load_data(file_path)
-                    yield self.data[data_file], self.labels[data_file]
+                    yield np.array(self.data[data_file]), self.labels[data_file]
