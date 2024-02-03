@@ -140,7 +140,7 @@ new_data = my_preproc_tech(old_data)
 
 - [x] **Two classes** need to be for images.
 - [x] **Two classes** need to be for audio.
-- [ ] In addition, you should create a datatype-agnostic preprocessing class that is able to sequentially perform multiple preprocessing steps.
+- [x] In addition, you should create a datatype-agnostic preprocessing class that is able to sequentially perform multiple preprocessing steps.
       See the following subsections for more info.
 
 #### Image preprocessing
