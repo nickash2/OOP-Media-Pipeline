@@ -1,147 +1,141 @@
 import numpy as np
-from PIL import Image
-import librosa
-from typing import List, Tuple
+from typing import Iterator
 
 
 class BatchLoader:
     """
-    A class for loading data in batches.
+    A class used to create batches of data.
 
-    Args:
-        data (np.ndarray): The list of data to load.
-        batch_size (int): The size of each batch.
-        file_type (str): The type of files to load ('image' or 'audio').
-        shuffle (bool): Whether to shuffle the data.
-        sequential (bool): Whether to load the data sequentially.
+    ...
 
+    Attributes
+    ----------
+    data : np.ndarray
+        a numpy array containing the data to be batched
+    batch_size : int
+        the size of the batches to be created
+    shuffle : bool, optional
+        a flag used to determine whether to shuffle
+        the data before batching (default is True)
+    discard_last : bool, optional
+        a flag used to determine whether to discard the
+        last batch if it's smaller than batch_size (default is False)
+    indices : np.ndarray
+        a numpy array containing the indices of the data
+
+    Methods
+    -------
+    __len__():
+        Returns the number of batches that can be created
+        from the data with the specified batch size.
+    __iter__():
+        Returns an iterator that yields batches of data.
     """
-
     def __init__(
         self,
         data: np.ndarray,
         batch_size: int,
-        file_type: str,
         shuffle: bool = True,
-        sequential: bool = False,
-    ) -> None:
-        self._check_type(batch_size, int, "batch_size")
-        self._check_type(file_type, str, "file_type")
-        self._check_type(shuffle, bool, "shuffle")
-        self._check_type(sequential, bool, "sequential")
-        self._check_type(data, np.ndarray, "data")
-        self.batch_size = batch_size
-        self.sequential = sequential
-        self.shuffle = shuffle
+        discard_last: bool = False
+                ) -> None:
+        """
+        Constructs all the necessary attributes for the BatchLoader object.
+
+        Parameters
+        ----------
+            data : np.ndarray
+                a numpy array containing the data to be batched
+            batch_size : int
+                the size of the batches to be created
+            shuffle : bool, optional
+                a flag used to determine whether to shuffle
+                the data before batching (default is True)
+            discard_last : bool, optional
+                a flag used to determine whether to discard the
+                last batch if it's smaller than batch_size (default is False)
+        """
+        if not isinstance(data, np.ndarray):
+            raise ValueError("data must be a numpy array")
+        if not isinstance(batch_size, int) or batch_size <= 0:
+            raise ValueError("batch_size must be a positive integer")
+        if not isinstance(shuffle, bool):
+            raise ValueError("shuffle must be a boolean")
+        if not isinstance(discard_last, bool):
+            raise ValueError("discard_last must be a boolean")
         self.data = data
-        self.num_batches = len(self.data) // self.batch_size
-        self.current_index = 0
-        self.indices = np.arange(len(self.data))
-
-    def _randomize_batches(self) -> None:
-        """
-        Randomizes the order of the batches.
-        """
-        np.random.shuffle(self.indices)
-
-    def _check_type(self, variable, variable_type, variable_name):
-        """
-        Checks if the variable has the correct type.
-
-        Args:
-            variable: The variable to check.
-            variable_type: The expected type of the variable.
-            variable_name: The name of the variable.
-
-        Raises:
-            TypeError: If the variable has an incorrect type.
-        """
-        if not isinstance(variable, variable_type):
-            raise TypeError(f"{variable_name} must" +
-                            "be a {variable_type.__name__}")
-
-    def create_batches(self, discard_last_batch: bool = False) -> np.ndarray:
-        """
-        Creates the batches of data.
-
-        Args:
-            discard_last_batch (bool, optional): Whether to discard
-            the last batch if its size is less than the batch size.
-
-        Returns:
-            numpy.ndarray: The batches of data.
-        """
-        if self.shuffle and not self.sequential:
-            self._randomize_batches()
-
-        if not discard_last_batch and len(self.data) % self.batch_size != 0:
-            self.num_batches += 1
-
-        if self.sequential:
-            self.batches = [
-                self.indices[i: i + self.batch_size]
-                for i in range(0, len(self.data), self.batch_size)
-            ]
-        else:
-            self.batches = np.array_split(self.indices, self.num_batches)
-
-        return self.batches
+        self.batch_size = batch_size
+        self.shuffle = shuffle
+        self.discard_last = discard_last
+        self.indices = np.arange(data.shape[0])
 
     def __len__(self) -> int:
         """
-        Returns the number of batches.
+        Returns the number of batches that can be
+        created from the data with the specified batch size.
 
-        Returns:
-            int: The number of batches.
+        Returns
+        -------
+        int
+            the number of batches
         """
-        if len(self.data) % self.batch_size != 0:
-            self.num_batches += 1
-        return self.num_batches
+        if self.discard_last and self.data.shape[0] % self.batch_size != 0:
+            return self.data.shape[0] // self.batch_size
+        else:
+            return ((self.data.shape[0] + self.batch_size - 1)
+                    // self.batch_size)
 
-    def __iter__(self) -> "BatchLoader":
-        """
-        Initializes the iterator.
+    def __iter__(self) -> Iterator[np.ndarray]:
+        if self.shuffle:
+            try:
+                np.random.shuffle(self.indices)
+            except Exception as e:
+                raise RuntimeError(
+                    "An error occurred while shuffling the indices"
+                ) from e
+        for i in range(0, len(self.indices), self.batch_size):
+            batch_idx = self.indices[i: i + self.batch_size]
+            if self.discard_last and len(batch_idx) < self.batch_size:
+                break
+            try:
+                yield self.data[batch_idx]
+            except Exception as e:
+                raise RuntimeError(
+                    "An error occurred while creating a batch"
+                    ) from e
 
-        Returns:
-            BatchLoader: The iterator object.
-        """
-        self.current_index = 0
-        return self
 
-    def __next__(self) -> List[np.ndarray]:
-        """
-        Loads the next batch of data.
+def __len__(self):
+    """
+    Returns the number of batches that can be
+    created from the data with the specified batch size.
 
-        Returns:
-            List[numpy.ndarray]: The batch of data.
+    Returns
+    -------
+    int
+        the number of batches
+    """
+    if self.discard_last and self.data.shape[0] % self.batch_size != 0:
+        return self.data.shape[0] // self.batch_size
+    else:
+        return ((self.data.shape[0] + self.batch_size - 1)
+                // self.batch_size)
 
-        Raises:
-            StopIteration: If there are no more batches to load.
-        """
-        if self.current_index >= len(self.batches):
-            raise StopIteration
 
-        batch_indices = self.batches[self.current_index]
-        batch_data = [self._load_data(i) for i in batch_indices]
-
-        self.current_index += 1
-        return batch_data
-
-    def _load_data(self,
-                   index: int,
-                   file_type: str
-                   ) -> Image or Tuple[np.ndarray, int]:
-        """
-        Loads the data at the given index.
-
-        Args:
-            index (int): The index of the data.
-            file_type (str): The type of file to load ('image' or 'audio').
-
-        Returns:
-            Image or Tuple[numpy.ndarray, int]: The loaded data.
-        """
-        if file_type == "image":
-            return Image.open(self.data[index])
-        elif file_type == "audio":
-            return librosa.load(self.data[index])
+def __iter__(self):
+    if self.shuffle:
+        try:
+            np.random.shuffle(self.indices)
+        except Exception as e:
+            raise RuntimeError(
+                "An error occurred while shuffling the indices"
+            ) from e
+    for i in range(0, len(self.indices), self.batch_size):
+        batch_idx = self.indices[i: i + self.batch_size]
+        if self.discard_last and len(batch_idx) < self.batch_size:
+            break
+        try:
+            yield self.data[batch_idx]
+        except Exception as e:
+            raise RuntimeError(
+                "An error occurred while creating a batch"
+                ) from e
