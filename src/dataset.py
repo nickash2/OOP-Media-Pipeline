@@ -13,7 +13,7 @@ class Dataset(AbstractDataset):
         """
         Initialize a Dataset.
 
-        Parameters:
+        Args:
         root (str): The path to the directory containing the data files.
         data_type (str): The type of data in the dataset.
         """
@@ -51,7 +51,7 @@ class Dataset(AbstractDataset):
         """
         Get a specific data point from the dataset.
 
-        Parameters:
+        Args:
         idx (int): The index of the data point to retrieve.
 
         Returns:
@@ -68,7 +68,7 @@ class Dataset(AbstractDataset):
         Load all data points in the dataset eagerly.
 
         Returns:
-        dict: A dictionary mapping filenames to data points.
+            dict: A dictionary mapping filenames to data points.
         """
         self.data = {}
         for dir_path in self.data_paths:
@@ -83,7 +83,7 @@ class Dataset(AbstractDataset):
         Load data points in the dataset lazily.
 
         Yields:
-        Any: The next data point in the dataset.
+            Any: The next data point in the dataset.
         """
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
@@ -95,7 +95,7 @@ class Dataset(AbstractDataset):
         """
         Load a data point from a file.
 
-        Parameters:
+        Args:
         file_path (str): The path to the data file.
 
         Returns:
@@ -112,11 +112,11 @@ class Dataset(AbstractDataset):
         """
         Split the dataset into training and testing sets.
 
-        Parameters:
-        ratio (float): The ratio of testing data to total data.
+        Args:
+            ratio (float): The ratio of testing data to total data.
 
         Returns:
-        tuple: A tuple containing the training data and testing data.
+            tuple: A tuple containing the training data and testing data.
         """
         if self.data is None:
             self.load_data_eager()
@@ -137,7 +137,7 @@ class LabeledDataset(Dataset):
         """
         Initialize a LabeledDataset.
 
-        Parameters:
+        Args:
         root (str): The path to the directory containing the data files.
         label_file (str): The path to the CSV file containing the labels.
         data_type (str): The type of data in the dataset.
@@ -158,7 +158,7 @@ class LabeledDataset(Dataset):
             with open(path, "r"):
                 df = pd.read_csv(path, header=None)
                 # Remove the .jpg extension from the first column
-                df[0] = df[0].str.replace('.jpg', '')
+                df[0] = df[0].str.replace(".jpg", "")
                 # Sort the DataFrame by the first column
                 df = df.sort_values(by=[0])
                 # Convert the DataFrame to a dictionary and return it
@@ -167,22 +167,43 @@ class LabeledDataset(Dataset):
             raise FileNotFoundError(f"No such file: {path}")
 
     def __getitem__(self, idx: int) -> Tuple[np.array, List[str]]:
+        """
+        Get the data and label at the given index.
+
+        Args:
+        idx (int): The index of the data point.
+
+        Returns:
+        tuple: A tuple containing the data and label.
+        """
         if not isinstance(idx, int):
             raise TypeError("idx must be an integer")
         values = super().__getitem__(idx)
         return values, list(self.labels.values())[idx]
 
     def load_data_eager(self) -> Tuple[Dict[str, np.array], Dict[str, str]]:
+        """
+        Load the data and labels eagerly.
+
+        Returns:
+            tuple: A tuple containing the data and labels.
+        """
         self.data = {}
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
-        file_name_without_extension = file_name.replace('.jpg', '')
+        file_name_without_extension = file_name.replace(".jpg", "")
         return self.data, self.labels[file_name_without_extension]
 
     def load_data_lazy(self) -> Generator[Tuple[np.array, str], None, None]:
+        """
+        Load the data and labels lazily.
+
+        Yields:
+            tuple: A tuple containing the data and label.
+        """
         for dir_path in self.data_paths:
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
@@ -200,7 +221,7 @@ class UnlabeledDataset(Dataset):
         """
         Initialize an UnlabeledDataset.
 
-        Parameters:
+        Args:
         root (str): The path to the directory containing the data files.
         data_type (str): The type of data in the dataset.
         """
@@ -229,13 +250,22 @@ class HierarchicalDataset(Dataset):
         """
         Initialize a HierarchicalLabeledDataset.
 
-        Parameters:
+        Args:
         root (str): The path to the directory containing the data files.
         data_type (str): The type of data in the dataset.
         """
         super().__init__(root, data_type)
 
     def _load_labels(self) -> Dict[str, List[str]]:
+        """
+        Load the labels from the dataset root directory.
+
+        Returns:
+            A dictionary containing class names as keys and a
+            sorted list of labels as values.
+        Raises:
+            FileNotFoundError: If the dataset root directory does not exist.
+        """
         labels = {}
         try:
             for class_folder in os.listdir(self.root):
@@ -247,11 +277,35 @@ class HierarchicalDataset(Dataset):
         return labels
 
     def __len__(self) -> int:
+        """
+        Returns the total number of data points in the dataset.
+
+        If the data is not loaded, it will be loaded
+        eagerly before calculating the length.
+
+        Returns:
+            int: The total number of data points in the dataset.
+        """
         if self.data is None:
             self.load_data_eager()
         return sum(len(data_points) for data_points in self.data.values())
 
     def __getitem__(self, idx: int) -> Tuple[np.ndarray, str]:
+        """
+        Get the item at the given index.
+
+        Args:
+            idx (int or tuple): The index of the item to retrieve.
+
+        Returns:
+            tuple: A tuple containing the data point and the label.
+
+        Raises:
+            TypeError: If idx is not an integer or a tuple of integers.
+            TypeError: If idx is a tuple and not all elements are integers.
+            IndexError: If idx is an integer and is out of range.
+
+        """
         if self.data is None:
             self.load_data_eager()
         if not isinstance(idx, (int, tuple)):
@@ -265,7 +319,6 @@ class HierarchicalDataset(Dataset):
         # If idx is a tuple, treat the first element as the directory index
         # and the second element as the data point index within that directory.
         if isinstance(idx, tuple):
-
             directory_index, data_point_index = idx
             directory_key = self.keys[directory_index]
             # returns a tuple of the data point and the label
@@ -276,6 +329,13 @@ class HierarchicalDataset(Dataset):
             return list(self.data.values())[idx], self.keys[idx]
 
     def load_data_eager(self) -> Tuple[np.ndarray, List[str]]:
+        """
+        Load the data eagerly into memory.
+
+        Returns:
+            Tuple[np.ndarray, List[str]]: A tuple containing the loaded
+            data and the corresponding labels.
+        """
         self.data = {}
         for class_folder in sorted(os.listdir(self.root)):
             class_path = os.path.join(self.root, class_folder)
@@ -288,6 +348,13 @@ class HierarchicalDataset(Dataset):
         return self.data, self.labels
 
     def load_data_lazy(self) -> Generator[Tuple[np.ndarray, str], None, None]:
+        """
+        Load the data lazily as a generator.
+
+        Yields:
+            Generator[Tuple[np.ndarray, str], None, None]: A generator
+            that yields tuples of loaded data and corresponding labels.
+        """
         self.data = {}
         for class_folder in sorted(os.listdir(self.root)):
             class_path = os.path.join(self.root, class_folder)
