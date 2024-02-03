@@ -76,7 +76,12 @@ class Dataset(AbstractDataset):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
-        return np.array(list(self.data.values()))
+        if (self.data_type == "image"):
+            return np.array(list(self.data.values()))
+        else:
+            data_list = list(self.data.values())
+            audio_data, sampling_rates = zip(*data_list)
+            return np.array(audio_data, dtype=object), np.array(sampling_rates)
 
     def load_data_lazy(self) -> Generator:
         """
