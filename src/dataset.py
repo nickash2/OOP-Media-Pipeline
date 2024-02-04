@@ -171,6 +171,15 @@ class LabeledDataset(Dataset):
         except FileNotFoundError:
             raise FileNotFoundError(f"No such file: {path}")
 
+    def __len__(self) -> int:
+        """
+        Get the length of the dataset.
+
+        Returns:
+        int: The number of data files in the dataset.
+        """
+        return len(self.labels)
+
     def __getitem__(self, idx: int) -> Tuple[np.array, List[str]]:
         """
         Get the data and label at the given index.
