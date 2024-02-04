@@ -21,13 +21,13 @@ class DataLoader(ABC):
             data_type (str): The type of data.
             labels (list, optional): The labels for the data. Defaults to None.
         """
-        self.root = root
-        self.data_type = data_type
-        self.data_paths = [
-            os.path.join(self.root, dir_path)
-            for dir_path in sorted(os.listdir(self.root))
+        self._root = root
+        self._data_type = data_type
+        self._data_paths = [
+            os.path.join(self._root, dir_path)
+            for dir_path in sorted(os.listdir(self._root))
         ]
-        self.labels = labels
+        self._labels = labels
 
     @abstractmethod
     def load_data_eager(self, path: str) -> None:
@@ -47,10 +47,10 @@ class DataLoader(ABC):
         Returns:
         Any: The loaded data point.
         """
-        if self.data_type == "image":
+        if self._data_type == "image":
             img = Image.open(file_path)
             return np.array(img.convert("RGB"))  # use rgb
-        elif self.data_type == "audio":
+        elif self._data_type == "audio":
             audio, sr = librosa.load(file_path)
             return (audio, sr)
 
@@ -67,7 +67,7 @@ class UnlabeledDataLoader(DataLoader):
         Returns:
             None
         """
-        self.data_type = data_type
+        self._data_type = data_type
         super().__init__(root, data_type)
 
     def load_data_eager(self) -> Dict[str, np.array]:
@@ -78,12 +78,12 @@ class UnlabeledDataLoader(DataLoader):
             dict: A dictionary mapping filenames to data points.
         """
         self.data = {}
-        for dir_path in self.data_paths:
+        for dir_path in self._data_paths:
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
-        if self.data_type == "image":
+        if self._data_type == "image":
             return np.array(list(self.data.values()))
         else:
             data_list = list(self.data.values())
@@ -97,7 +97,7 @@ class UnlabeledDataLoader(DataLoader):
         Yields:
             Any: The next data point in the dataset.
         """
-        for dir_path in self.data_paths:
+        for dir_path in self._data_paths:
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
@@ -122,7 +122,7 @@ class LabeledDataLoader(DataLoader):
         Returns:
             None
         """
-        self.data_type = data_type
+        self._data_type = data_type
         super().__init__(root, data_type, labels)
 
     def load_data_eager(self) -> Tuple[Dict[str, np.array], Dict[str, str]]:
@@ -133,7 +133,7 @@ class LabeledDataLoader(DataLoader):
             tuple: A tuple containing the data and labels.
         """
         self.data = {}
-        for dir_path in self.data_paths:
+        for dir_path in self._data_paths:
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
@@ -141,7 +141,7 @@ class LabeledDataLoader(DataLoader):
         file_name_without_extension, _ = os.path.splitext(file_name)
         return (
             np.array(list(self.data.values()), dtype=object),
-            self.labels,
+            self._labels,
         )
 
     def load_data_lazy(self) -> Generator[Tuple[np.ndarray, str], None, None]:
@@ -151,13 +151,13 @@ class LabeledDataLoader(DataLoader):
         Yields:
             tuple: A tuple containing the data and label.
         """
-        for dir_path in self.data_paths:
+        for dir_path in self._data_paths:
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     data = self._load_data(file_path)
                     file_name_no_extension, _ = os.path.splitext(file_name)
-                    yield (np.array(data), self.labels[file_name_no_extension])
+                    yield (np.array(data), self._labels[file_name_no_extension])
 
 
 class HierarchicalDataLoader(DataLoader):
@@ -170,7 +170,7 @@ class HierarchicalDataLoader(DataLoader):
             data_type (str): The type of data.
             labels (List[str]): The list of labels.
         """
-        self.data_type = data_type
+        self._data_type = data_type
         super().__init__(root, data_type, labels)
 
     def load_data_eager(self) -> Tuple[np.ndarray, List[str]]:
@@ -182,15 +182,15 @@ class HierarchicalDataLoader(DataLoader):
             data and the corresponding labels.
         """
         self.data = {}
-        for class_folder in sorted(os.listdir(self.root)):
-            class_path = os.path.join(self.root, class_folder)
+        for class_folder in sorted(os.listdir(self._root)):
+            class_path = os.path.join(self._root, class_folder)
             if os.path.isdir(class_path):
                 # If current entry is a directory, use its name as the label
                 self.data[class_folder] = []
                 for data_file in sorted(os.listdir(class_path)):
                     file_path = os.path.join(class_path, data_file)
                     self.data[class_folder].append(self._load_data(file_path))
-        return (np.array(list(self.data.values()), dtype=object), self.labels)
+        return (np.array(list(self.data.values()), dtype=object), self._labels)
 
     def load_data_lazy(self) -> Generator[Tuple[np.ndarray, str], None, None]:
         """
@@ -200,11 +200,11 @@ class HierarchicalDataLoader(DataLoader):
             Generator[Tuple[np.ndarray, str], None, None]: A generator
             that yields tuples of loaded data and corresponding labels.
         """
-        for class_folder in sorted(os.listdir(self.root)):
-            class_path = os.path.join(self.root, class_folder)
+        for class_folder in sorted(os.listdir(self._root)):
+            class_path = os.path.join(self._root, class_folder)
             if os.path.isdir(class_path):
                 # If current entry is a directory, use its name as the label
                 for data_file in sorted(os.listdir(class_path)):
                     file_path = os.path.join(class_path, data_file)
                     data = self._load_data(file_path)
-                    yield (np.array(data), self.labels[data_file])
+                    yield (np.array(data), self._labels[data_file])
