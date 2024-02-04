@@ -100,8 +100,12 @@
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset._abc_impl"><code class="docutils literal notranslate"><span class="pre">AbstractDataset._abc_impl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset._load_data"><code class="docutils literal notranslate"><span class="pre">AbstractDataset._load_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset._load_labels"><code class="docutils literal notranslate"><span class="pre">AbstractDataset._load_labels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.data"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.data_type"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.data_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.labels"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.labels</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.load_data_eager"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.load_data_eager()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.load_data_lazy"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.load_data_lazy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.root"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.root</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.split"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.split()</span></code></a></li>
 </ul>
 </li>
@@ -114,6 +118,11 @@
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.batchloader.BatchLoader.shuffle"><code class="docutils literal notranslate"><span class="pre">BatchLoader.shuffle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.batchloader.BatchLoader.discard_last"><code class="docutils literal notranslate"><span class="pre">BatchLoader.discard_last</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.batchloader.BatchLoader.indices"><code class="docutils literal notranslate"><span class="pre">BatchLoader.indices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#id0"><code class="docutils literal notranslate"><span class="pre">BatchLoader.batch_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#id1"><code class="docutils literal notranslate"><span class="pre">BatchLoader.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#id2"><code class="docutils literal notranslate"><span class="pre">BatchLoader.discard_last</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#id3"><code class="docutils literal notranslate"><span class="pre">BatchLoader.indices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#id4"><code class="docutils literal notranslate"><span class="pre">BatchLoader.shuffle</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -123,6 +132,8 @@
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset._abc_impl"><code class="docutils literal notranslate"><span class="pre">Dataset._abc_impl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset._load_data"><code class="docutils literal notranslate"><span class="pre">Dataset._load_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset._load_labels"><code class="docutils literal notranslate"><span class="pre">Dataset._load_labels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset.data_paths"><code class="docutils literal notranslate"><span class="pre">Dataset.data_paths</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset.dataloader"><code class="docutils literal notranslate"><span class="pre">Dataset.dataloader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset.load_data_eager"><code class="docutils literal notranslate"><span class="pre">Dataset.load_data_eager()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset.load_data_lazy"><code class="docutils literal notranslate"><span class="pre">Dataset.load_data_lazy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset.split"><code class="docutils literal notranslate"><span class="pre">Dataset.split()</span></code></a></li>
@@ -155,21 +166,29 @@
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop._abc_impl"><code class="docutils literal notranslate"><span class="pre">CentreCrop._abc_impl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop._check_valid_size"><code class="docutils literal notranslate"><span class="pre">CentreCrop._check_valid_size()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop._preprocess"><code class="docutils literal notranslate"><span class="pre">CentreCrop._preprocess()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop.height_param"><code class="docutils literal notranslate"><span class="pre">CentreCrop.height_param</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop.width_param"><code class="docutils literal notranslate"><span class="pre">CentreCrop.width_param</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram._abc_impl"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram._abc_impl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram._preprocess"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram._preprocess()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram.file_name"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram.file_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram.sample_rate"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram.sample_rate</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.PitchShift"><code class="docutils literal notranslate"><span class="pre">PitchShift</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PitchShift._abc_impl"><code class="docutils literal notranslate"><span class="pre">PitchShift._abc_impl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PitchShift._preprocess"><code class="docutils literal notranslate"><span class="pre">PitchShift._preprocess()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PitchShift.pitch_factor"><code class="docutils literal notranslate"><span class="pre">PitchShift.pitch_factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PitchShift.sample_rate"><code class="docutils literal notranslate"><span class="pre">PitchShift.sample_rate</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline._abc_impl"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline._abc_impl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline._preprocess"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline._preprocess()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline.data"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline.preprocessors"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline.preprocessors</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.RandomCrop"><code class="docutils literal notranslate"><span class="pre">RandomCrop</span></code></a><ul>
