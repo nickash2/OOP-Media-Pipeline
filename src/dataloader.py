@@ -6,10 +6,21 @@ from PIL import Image
 import librosa
 
 
-# The DataLoader class is an abstract class
-# that defines the interface for data loaders.
 class DataLoader(ABC):
-    def __init__(self, root: str, data_type: str, labels=None):
+    def __init__(
+        self,
+        root: str,
+        data_type: str,
+        labels=None
+            ) -> None:
+        """
+        Initialize the DataLoader class.
+
+        Args:
+            root (str): The root directory path.
+            data_type (str): The type of data.
+            labels (list, optional): The labels for the data. Defaults to None.
+        """
         self.root = root
         self.data_type = data_type
         self.data_paths = [
@@ -19,14 +30,14 @@ class DataLoader(ABC):
         self.labels = labels
 
     @abstractmethod
-    def load_data_eager(self, path):
+    def load_data_eager(self, path: str) -> None:
         pass
 
     @abstractmethod
-    def load_data_lazy(self, path):
+    def load_data_lazy(self, path: str) -> None:
         pass
 
-    def _load_data(self, file_path):
+    def _load_data(self, file_path: str) -> None:
         """
         Load a data point from a file.
 
@@ -45,7 +56,17 @@ class DataLoader(ABC):
 
 
 class UnlabeledDataLoader(DataLoader):
-    def __init__(self, root: str, data_type):
+    def __init__(self, root: str, data_type) -> None:
+        """
+        Initialize the UnlabeledDataLoader.
+
+        Args:
+            root (str): The root directory of the dataset.
+            data_type: The type of data to load.
+
+        Returns:
+            None
+        """
         self.data_type = data_type
         super().__init__(root, data_type)
 
@@ -84,7 +105,23 @@ class UnlabeledDataLoader(DataLoader):
 
 
 class LabeledDataLoader(DataLoader):
-    def __init__(self, root: str, data_type, labels):
+    def __init__(
+        self,
+        root: str,
+        data_type: str,
+        labels: List[str]
+    ) -> None:
+        """
+        Initialize the LabeledDataLoader.
+
+        Args:
+            root (str): The root directory of the data.
+            data_type (str): The type of data.
+            labels (List[str]): The list of labels.
+
+        Returns:
+            None
+        """
         self.data_type = data_type
         super().__init__(root, data_type, labels)
 
@@ -124,7 +161,15 @@ class LabeledDataLoader(DataLoader):
 
 
 class HierarchicalDataLoader(DataLoader):
-    def __init__(self, root: str, data_type, labels):
+    def __init__(self, root: str, data_type: str, labels: List[str]):
+        """
+        Initialize the HierarchicalDataLoader.
+
+        Args:
+            root (str): The root directory path.
+            data_type (str): The type of data.
+            labels (List[str]): The list of labels.
+        """
         self.data_type = data_type
         super().__init__(root, data_type, labels)
 
