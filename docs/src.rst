@@ -36,6 +36,14 @@ src.preprocessing module
    :undoc-members:
    :show-inheritance:
 
+src.dataloader module
+------------------------
+
+.. automodule:: src.dataloader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
