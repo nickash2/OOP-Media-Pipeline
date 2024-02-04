@@ -233,7 +233,6 @@ class LabeledDataset(Dataset):
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
-                    print(f"Loading data for file {file_name}")
                     data = self._load_data(file_path)
                     file_name_no_extension, _ = os.path.splitext(file_name)
                     yield (np.array(data), self.labels[file_name_no_extension])
