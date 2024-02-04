@@ -1,28 +1,40 @@
 import os
 from typing import Dict, Tuple, Any, Generator, List
 from abstract_dataset import AbstractDataset
-import librosa
+from dataloader import (
+    LabeledDataLoader,
+    HierarchicalDataLoader,
+    DataLoader,
+    UnlabeledDataLoader
+    )
 import numpy as np
-from PIL import Image
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import itertools
 
 
 class Dataset(AbstractDataset):
-    def __init__(self, root: str, data_type: str) -> None:
+    def __init__(
+        self,
+        root: str,
+        data_type: str,
+        dataloader: DataLoader
+            ) -> None:
         """
         Initialize a Dataset.
 
         Args:
-        root (str): The path to the directory containing the data files.
-        data_type (str): The type of data in the dataset.
+            root (str): The path to the directory
+            containing the data files.
+            data_type (str): The type of data in the dataset.
         """
         if not isinstance(root, str):
             raise TypeError("root must be a string")
         if not isinstance(data_type, str):
             raise TypeError("data_type must be a string")
-
+        if not isinstance(dataloader, DataLoader):
+            raise TypeError("dataloader must be a DataLoader type")
+        self.dataloader = dataloader
         super().__init__(root, data_type)
         try:
             self.data_paths = [os.path.join(root, file)
@@ -78,18 +90,7 @@ class Dataset(AbstractDataset):
         Returns:
             dict: A dictionary mapping filenames to data points.
         """
-        self.data = {}
-        for dir_path in self.data_paths:
-            if os.path.isdir(dir_path):
-                for file_name in sorted(os.listdir(dir_path)):
-                    file_path = os.path.join(dir_path, file_name)
-                    self.data[file_name] = self._load_data(file_path)
-        if self.data_type == "image":
-            return np.array(list(self.data.values()))
-        else:
-            data_list = list(self.data.values())
-            audio_data, sampling_rates = zip(*data_list)
-            return np.array(audio_data, dtype=object), np.array(sampling_rates)
+        return self.dataloader.load_data_eager()
 
     def load_data_lazy(self) -> Generator:
         """
@@ -98,11 +99,7 @@ class Dataset(AbstractDataset):
         Yields:
             Any: The next data point in the dataset.
         """
-        for dir_path in self.data_paths:
-            if os.path.isdir(dir_path):
-                for file_name in sorted(os.listdir(dir_path)):
-                    file_path = os.path.join(dir_path, file_name)
-                    yield self._load_data(file_path)
+        return self.dataloader.load_data_lazy()
 
     def _load_data(self, file_path: str) -> np.array | Tuple[np.array, int]:
         """
@@ -114,12 +111,7 @@ class Dataset(AbstractDataset):
         Returns:
         Any: The loaded data point.
         """
-        if self.data_type == "image":
-            img = Image.open(file_path)
-            return np.array(img.convert("RGB"))  # use rgb
-        elif self.data_type == "audio":
-            audio, sr = librosa.load(file_path)
-            return (audio, sr)
+        return self.dataloader._load_data(file_path)
 
     def split(self, ratio: float) -> Tuple[np.array, np.array]:
         """
@@ -155,8 +147,14 @@ class LabeledDataset(Dataset):
         label_file (str): The path to the CSV file containing the labels.
         data_type (str): The type of data in the dataset.
         """
+        self.root = root
         self.label_file = label_file
-        super().__init__(root, data_type)
+        labels = self._load_labels()
+        super().__init__(
+            root,
+            data_type,
+            dataloader=LabeledDataLoader(root, data_type, labels)
+            )
 
     def _load_labels(self) -> Dict[str, str]:
         """
@@ -170,8 +168,8 @@ class LabeledDataset(Dataset):
         try:
             with open(path, "r"):
                 df = pd.read_csv(path, header=None)
-                # Remove the .jpg extension from the first column
-                df[0] = df[0].str.replace(".jpg", "")
+                # Remove the file extension from the first column
+                df[0] = df[0].apply(lambda x: os.path.splitext(x)[0])
                 # Sort the DataFrame by the first column
                 df = df.sort_values(by=[0])
                 # Convert the DataFrame to a dictionary and return it
@@ -203,40 +201,6 @@ class LabeledDataset(Dataset):
         values, _ = super().__getitem__(idx)
         return values, list(self.labels.values())[idx]
 
-    def load_data_eager(self) -> Tuple[Dict[str, np.array], Dict[str, str]]:
-        """
-        Load the data and labels eagerly.
-
-        Returns:
-            tuple: A tuple containing the data and labels.
-        """
-        self.data = {}
-        for dir_path in self.data_paths:
-            if os.path.isdir(dir_path):
-                for file_name in sorted(os.listdir(dir_path)):
-                    file_path = os.path.join(dir_path, file_name)
-                    self.data[file_name] = self._load_data(file_path)
-        file_name_without_extension, _ = os.path.splitext(file_name)
-        return (
-            np.array(list(self.data.values()), dtype=object),
-            self.labels[file_name_without_extension],
-        )
-
-    def load_data_lazy(self) -> Generator[Tuple[np.ndarray, str], None, None]:
-        """
-        Load the data and labels lazily.
-
-        Yields:
-            tuple: A tuple containing the data and label.
-        """
-        for dir_path in self.data_paths:
-            if os.path.isdir(dir_path):
-                for file_name in sorted(os.listdir(dir_path)):
-                    file_path = os.path.join(dir_path, file_name)
-                    data = self._load_data(file_path)
-                    file_name_no_extension, _ = os.path.splitext(file_name)
-                    yield (np.array(data), self.labels[file_name_no_extension])
-
 
 class UnlabeledDataset(Dataset):
     """
@@ -251,7 +215,11 @@ class UnlabeledDataset(Dataset):
         root (str): The path to the directory containing the data files.
         data_type (str): The type of data in the dataset.
         """
-        super().__init__(root, data_type)
+        self.root = root
+        super().__init__(
+            root,
+            data_type,
+            dataloader=UnlabeledDataLoader(root, data_type))
 
     def _load_labels(self) -> Dict[str, None]:
         """
@@ -280,7 +248,12 @@ class HierarchicalDataset(Dataset):
         root (str): The path to the directory containing the data files.
         data_type (str): The type of data in the dataset.
         """
-        super().__init__(root, data_type)
+        self.root = root
+        self.labels = self._load_labels()
+        super().__init__(
+            root,
+            data_type,
+            dataloader=HierarchicalDataLoader(root, data_type, self.labels))
 
     def _load_labels(self) -> Dict[str, List[str]]:
         """
@@ -353,39 +326,3 @@ class HierarchicalDataset(Dataset):
         else:
             # If idx is not a tuple, it is a direct index to the data points.
             return list(self.data.values())[idx], self.keys[idx]
-
-    def load_data_eager(self) -> Tuple[np.ndarray, List[str]]:
-        """
-        Load the data eagerly into memory.
-
-        Returns:
-            Tuple[np.ndarray, List[str]]: A tuple containing the loaded
-            data and the corresponding labels.
-        """
-        self.data = {}
-        for class_folder in sorted(os.listdir(self.root)):
-            class_path = os.path.join(self.root, class_folder)
-            if os.path.isdir(class_path):
-                # If current entry is a directory, use its name as the label
-                self.data[class_folder] = []
-                for data_file in sorted(os.listdir(class_path)):
-                    file_path = os.path.join(class_path, data_file)
-                    self.data[class_folder].append(self._load_data(file_path))
-        return np.array(self.data), self.labels
-
-    def load_data_lazy(self) -> Generator[Tuple[np.ndarray, str], None, None]:
-        """
-        Load the data lazily as a generator.
-
-        Yields:
-            Generator[Tuple[np.ndarray, str], None, None]: A generator
-            that yields tuples of loaded data and corresponding labels.
-        """
-        for class_folder in sorted(os.listdir(self.root)):
-            class_path = os.path.join(self.root, class_folder)
-            if os.path.isdir(class_path):
-                # If current entry is a directory, use its name as the label
-                for data_file in sorted(os.listdir(class_path)):
-                    file_path = os.path.join(class_path, data_file)
-                    data = self._load_data(file_path)
-                    yield (np.array(data), self.labels[data_file])
