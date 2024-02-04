@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import itertools
 
 
 class Dataset(AbstractDataset):
@@ -47,21 +48,28 @@ class Dataset(AbstractDataset):
         """
         return len(self.data_paths)
 
-    def __getitem__(self, idx: int) -> Any:
+    def __getitem__(self, idx: int) -> Tuple[np.array, str]:
         """
-        Get a specific data point from the dataset.
+        Get the data and label at the given index.
 
         Args:
-        idx (int): The index of the data point to retrieve.
+        idx (int): The index of the data point.
 
         Returns:
-        Any: The data point at the specified index.
+        tuple: A tuple containing the data and label.
         """
         if not isinstance(idx, int):
             raise TypeError("idx must be an integer")
-        if self.data is None:
-            self.load_data_eager()
-        return list(self.data.values())[idx]
+
+        # Use the lazy loading function to get the data at the given index
+        data, label = next(
+            itertools.islice(self.load_data_lazy(), idx, idx + 1)
+            )
+
+        return data, label
+
+    def __iter__(self):
+        return self.load_data_lazy()
 
     def load_data_eager(self) -> Dict[str, np.array]:
         """
@@ -76,7 +84,7 @@ class Dataset(AbstractDataset):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
-        if (self.data_type == "image"):
+        if self.data_type == "image":
             return np.array(list(self.data.values()))
         else:
             data_list = list(self.data.values())
@@ -192,7 +200,7 @@ class LabeledDataset(Dataset):
         """
         if not isinstance(idx, int):
             raise TypeError("idx must be an integer")
-        values = super().__getitem__(idx)
+        values, _ = super().__getitem__(idx)
         return values, list(self.labels.values())[idx]
 
     def load_data_eager(self) -> Tuple[Dict[str, np.array], Dict[str, str]]:
@@ -208,10 +216,13 @@ class LabeledDataset(Dataset):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
                     self.data[file_name] = self._load_data(file_path)
-        file_name_without_extension = file_name.replace(".jpg", "")
-        return np.array(list(self.data.values())), self.labels[file_name_without_extension]
+        file_name_without_extension, _ = os.path.splitext(file_name)
+        return (
+            np.array(list(self.data.values()), dtype=object),
+            self.labels[file_name_without_extension],
+        )
 
-    def load_data_lazy(self) -> Generator[Tuple[np.array, str], None, None]:
+    def load_data_lazy(self) -> Generator[Tuple[np.ndarray, str], None, None]:
         """
         Load the data and labels lazily.
 
@@ -222,8 +233,10 @@ class LabeledDataset(Dataset):
             if os.path.isdir(dir_path):
                 for file_name in sorted(os.listdir(dir_path)):
                     file_path = os.path.join(dir_path, file_name)
-                    self.data[file_name] = self._load_data(file_path)
-                    yield np.array(list(self.data[file_name])), self.labels[file_name]
+                    print(f"Loading data for file {file_name}")
+                    data = self._load_data(file_path)
+                    file_name_no_extension, _ = os.path.splitext(file_name)
+                    yield (np.array(data), self.labels[file_name_no_extension])
 
 
 class UnlabeledDataset(Dataset):
@@ -369,12 +382,11 @@ class HierarchicalDataset(Dataset):
             Generator[Tuple[np.ndarray, str], None, None]: A generator
             that yields tuples of loaded data and corresponding labels.
         """
-        self.data = {}
         for class_folder in sorted(os.listdir(self.root)):
             class_path = os.path.join(self.root, class_folder)
             if os.path.isdir(class_path):
                 # If current entry is a directory, use its name as the label
                 for data_file in sorted(os.listdir(class_path)):
                     file_path = os.path.join(class_path, data_file)
-                    self.data[data_file] = self._load_data(file_path)
-                    yield np.array(self.data[data_file]), self.labels[data_file]
+                    data = self._load_data(file_path)
+                    yield (np.array(data), self.labels[data_file])
