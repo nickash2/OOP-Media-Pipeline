@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 import librosa
+from typing import List
 
 
 class AbtractPreprocessor(ABC):
@@ -85,11 +86,14 @@ class CentreCrop(AbtractPreprocessor):
         Raises:
             TypeError: If img is not an Image (PIL) object.
         """
-        if not isinstance(img, Image):
+        if not isinstance(img, Image.Image) and isinstance(img, np.ndarray):
+            img = Image.fromarray(img)
+
+        elif not isinstance(img, Image.Image):
             raise TypeError("img must be an Image (PIL) object")
 
         self.real_width, self.real_height = img.size
-        self.img = self._preprocess(Image.fromarray(img))
+        self.img = self._preprocess(img)
         return self.img
 
     def _check_valid_size(self, img: Image) -> bool:
@@ -116,7 +120,7 @@ class CentreCrop(AbtractPreprocessor):
         Returns:
             The cropped image as a NumPy array.
         """
-        if self._check_valid_size(img):
+        if not self._check_valid_size(img):
             return np.array(img)
 
         left = max(0, (self.real_width - self.width_param) / 2)
@@ -152,7 +156,7 @@ class RandomCrop(CentreCrop):
         Returns:
             The cropped image as a NumPy array.
         """
-        if self._check_valid_size(img):
+        if not self._check_valid_size(img):
             return np.array(img)
 
         left = np.random.randint(0, self.real_width - self.width_param + 1)
@@ -161,10 +165,9 @@ class RandomCrop(CentreCrop):
         bottom = top + self.height_param
         return np.array(img.crop((left, top, right, bottom)))
 
-
 # Audio
 
-# Pitch shift
+
 class PitchShift(AbtractPreprocessor):
     """
     Preprocessor that performs pitch shifting on audio.
@@ -181,7 +184,7 @@ class PitchShift(AbtractPreprocessor):
         self.pitch_factor = pitch_factor
         self.sample_rate = sample_rate
 
-    def __call__(self, audio):
+    def __call__(self, audio: np.ndarray) -> np.ndarray:
         """
         Apply the PitchShift preprocessor to the input audio.
 
@@ -194,7 +197,7 @@ class PitchShift(AbtractPreprocessor):
         self.audio = self._preprocess(audio)
         return self.audio
 
-    def _preprocess(self, audio):
+    def _preprocess(self, audio: np.ndarray) -> np.ndarray:
         """
         Perform the pitch shifting on the input audio.
 
@@ -210,13 +213,12 @@ class PitchShift(AbtractPreprocessor):
         return shifted
 
 
-# mel spectrogram
 class MelSpectrogram(AbtractPreprocessor):
     """
     Preprocessor that computes the mel spectrogram of audio.
     """
 
-    def __init__(self, sample_rate: float, file_name: str = ""):
+    def __init__(self, sample_rate: float, file_name: str = "") -> None:
         """
         Initialize the MelSpectrogram preprocessor.
 
@@ -227,7 +229,7 @@ class MelSpectrogram(AbtractPreprocessor):
         self.sample_rate = sample_rate
         self.file_name = file_name
 
-    def __call__(self, audio):
+    def __call__(self, audio: np.ndarray) -> np.ndarray:
         """
         Apply the MelSpectrogram preprocessor to the input audio.
 
@@ -240,7 +242,7 @@ class MelSpectrogram(AbtractPreprocessor):
         self.audio = self._preprocess(audio)
         return self.audio
 
-    def _preprocess(self, audio):
+    def _preprocess(self, audio: np.ndarray) -> np.ndarray:
         """
         Compute the mel spectrogram of the input audio.
 
@@ -263,6 +265,7 @@ class MelSpectrogram(AbtractPreprocessor):
         plt.tight_layout()
         if self.file_name:
             plt.savefig(self.file_name)
+        plt.close()
         return mel
 
 
@@ -289,16 +292,25 @@ class PreprocessingPipeline(AbtractPreprocessor):
         If a `MelSpectrogram` operation is followed
         by a `PitchShift` operation.
     """
-    def __init__(self, *preprocessors):
+
+    def __init__(self, preprocessors: List[AbtractPreprocessor]):
         self.preprocessors = preprocessors
 
-    def __call__(self, audio):
+    def __call__(self, data: np.ndarray) -> np.ndarray:
+        self.data = self._preprocess(data)
+        return self.data
+
+    def _preprocess(self, data: np.ndarray) -> np.ndarray:
         for i, preprocessor in enumerate(self.preprocessors):
             # Check if a MelSpectrogram is followed by a PitchShift operation
-            if (isinstance(preprocessor, MelSpectrogram) and
-                i < len(self.preprocessors) - 1 and
-                    isinstance(self.preprocessors[i + 1], PitchShift)):
-                raise ValueError("A MelSpectrogram operation cannot be" +
-                                 "followed by a PitchShift operation.")
-            audio = preprocessor(audio)
-        return audio
+            if (
+                isinstance(preprocessor, MelSpectrogram)
+                and i < len(self.preprocessors) - 1
+                and isinstance(self.preprocessors[i + 1], PitchShift)
+            ):
+                raise ValueError(
+                    "A MelSpectrogram operation cannot be"
+                    + "followed by a PitchShift operation."
+                )
+            data = preprocessor(data)
+        return data
