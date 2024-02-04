@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 import librosa
-from typing import List
+from typing import List, Union
 
 
 class AbtractPreprocessor(ABC):
@@ -73,7 +73,7 @@ class CentreCrop(AbtractPreprocessor):
         self.width_param = width
         self.height_param = height
 
-    def __call__(self, img: Image) -> Image:
+    def __call__(self, img: Union[Image.Image, np.ndarray]) -> Image.Image:
         """
         Apply the CentreCrop preprocessor to the input image.
 
@@ -87,7 +87,7 @@ class CentreCrop(AbtractPreprocessor):
             TypeError: If img is not an Image (PIL) object.
         """
         if not isinstance(img, Image.Image) and isinstance(img, np.ndarray):
-            img = Image.fromarray(img)
+            img = Image.fromarray(img.astype('uint8'))
 
         elif not isinstance(img, Image.Image):
             raise TypeError("img must be an Image (PIL) object")
