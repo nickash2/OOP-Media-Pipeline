@@ -116,6 +116,21 @@
 <dt class="sig sig-object py" id="src.abstract_dataset.AbstractDataset">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.abstract_dataset.</span></span><span class="sig-name descname"><span class="pre">AbstractDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.abstract_dataset.AbstractDataset" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.abstract_dataset.AbstractDataset._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.abstract_dataset.AbstractDataset._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.abstract_dataset.AbstractDataset._load_data">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.abstract_dataset.AbstractDataset._load_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.abstract_dataset.AbstractDataset._load_labels">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_load_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.abstract_dataset.AbstractDataset._load_labels" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="src.abstract_dataset.AbstractDataset.load_data_eager">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_data_eager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.abstract_dataset.AbstractDataset.load_data_eager" title="Link to this definition"></a></dt>
@@ -221,6 +236,29 @@ from the data with the specified batch size.</p>
 <dt class="sig sig-object py" id="src.dataset.Dataset">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.dataset.</span></span><span class="sig-name descname"><span class="pre">Dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataset.Dataset" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractDataset</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.dataset.Dataset._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.dataset.Dataset._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.dataset.Dataset._load_data">
+<span class="sig-name descname"><span class="pre">_load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.Dataset._load_data" title="Link to this definition"></a></dt>
+<dd><p>Load a data point from a file.</p>
+<p>Args:
+file_path (str): The path to the data file.</p>
+<p>Returns:
+Any: The loaded data point.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.dataset.Dataset._load_labels">
+<span class="sig-name descname"><span class="pre">_load_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.Dataset._load_labels" title="Link to this definition"></a></dt>
+<dd><p>Load the labels for the dataset.</p>
+<p>Returns:
+dict: A dictionary mapping filenames to labels.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="src.dataset.Dataset.load_data_eager">
 <span class="sig-name descname"><span class="pre">load_data_eager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">array</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.Dataset.load_data_eager" title="Link to this definition"></a></dt>
@@ -273,6 +311,26 @@ from the data with the specified batch size.</p>
 The labels are determined based on the directory structure.
 Each subdirectory in the root directory represents a class,
 and the files in each subdirectory are the data points for that class.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.dataset.HierarchicalDataset._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.dataset.HierarchicalDataset._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.dataset.HierarchicalDataset._load_labels">
+<span class="sig-name descname"><span class="pre">_load_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.HierarchicalDataset._load_labels" title="Link to this definition"></a></dt>
+<dd><p>Load the labels from the dataset root directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing class names as keys and a
+sorted list of labels as values.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If the dataset root directory does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="src.dataset.HierarchicalDataset.load_data_eager">
 <span class="sig-name descname"><span class="pre">load_data_eager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.HierarchicalDataset.load_data_eager" title="Link to this definition"></a></dt>
@@ -308,6 +366,20 @@ that yields tuples of loaded data and corresponding labels.</p>
 <dd><p>Bases: <a class="reference internal" href="#src.dataset.Dataset" title="src.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
 <p>A dataset where each data point has a label.
 The labels are loaded from a separate CSV file.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.dataset.LabeledDataset._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.dataset.LabeledDataset._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.dataset.LabeledDataset._load_labels">
+<span class="sig-name descname"><span class="pre">_load_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.LabeledDataset._load_labels" title="Link to this definition"></a></dt>
+<dd><p>Load labels from the CSV file.
+Each line in the file should be formatted as ‘&lt;filename&gt;,&lt;label&gt;’.</p>
+<p>Returns:
+dict: A dictionary mapping filenames to labels.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="src.dataset.LabeledDataset.load_data_eager">
 <span class="sig-name descname"><span class="pre">load_data_eager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">array</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.LabeledDataset.load_data_eager" title="Link to this definition"></a></dt>
@@ -340,6 +412,20 @@ The labels are loaded from a separate CSV file.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.dataset.</span></span><span class="sig-name descname"><span class="pre">UnlabeledDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataset.UnlabeledDataset" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.dataset.Dataset" title="src.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
 <p>A dataset where each data point does not have a label.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.dataset.UnlabeledDataset._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.dataset.UnlabeledDataset._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.dataset.UnlabeledDataset._load_labels">
+<span class="sig-name descname"><span class="pre">_load_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.UnlabeledDataset._load_labels" title="Link to this definition"></a></dt>
+<dd><p>Since the dataset is unlabeled,
+assign None as the label for each data file.</p>
+<p>Returns:
+dict: A dictionary mapping filenames to None.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -350,6 +436,25 @@ The labels are loaded from a separate CSV file.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">AbtractPreprocessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hyperparameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.AbtractPreprocessor" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Abstract base class for preprocessors.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.preprocessing.AbtractPreprocessor._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.preprocessing.AbtractPreprocessor._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.preprocessing.AbtractPreprocessor._preprocess">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.AbtractPreprocessor._preprocess" title="Link to this definition"></a></dt>
+<dd><p>Preprocess the input text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – The input text.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The preprocessed text.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -357,6 +462,39 @@ The labels are loaded from a separate CSV file.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">CentreCrop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.CentreCrop" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.preprocessing.AbtractPreprocessor" title="src.preprocessing.AbtractPreprocessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbtractPreprocessor</span></code></a></p>
 <p>Preprocessor that performs center cropping on images.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.preprocessing.CentreCrop._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.preprocessing.CentreCrop._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.preprocessing.CentreCrop._check_valid_size">
+<span class="sig-name descname"><span class="pre">_check_valid_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img:</span> <span class="pre">&lt;module</span> <span class="pre">'PIL.Image'</span> <span class="pre">from</span> <span class="pre">'/home/nick/.envs/oop-final/lib/python3.10/site-packages/PIL/Image.py'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#src.preprocessing.CentreCrop._check_valid_size" title="Link to this definition"></a></dt>
+<dd><p>Check if the input image has valid size for cropping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>img</strong> – The input image.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the image has valid size for cropping, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.preprocessing.CentreCrop._preprocess">
+<span class="sig-name descname"><span class="pre">_preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img:</span> <span class="pre">&lt;module</span> <span class="pre">'PIL.Image'</span> <span class="pre">from</span> <span class="pre">'/home/nick/.envs/oop-final/lib/python3.10/site-packages/PIL/Image.py'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#src.preprocessing.CentreCrop._preprocess" title="Link to this definition"></a></dt>
+<dd><p>Perform the center cropping on the input image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>img</strong> – The input image.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cropped image as a NumPy array.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -364,6 +502,25 @@ The labels are loaded from a separate CSV file.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">MelSpectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.MelSpectrogram" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.preprocessing.AbtractPreprocessor" title="src.preprocessing.AbtractPreprocessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbtractPreprocessor</span></code></a></p>
 <p>Preprocessor that computes the mel spectrogram of audio.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.preprocessing.MelSpectrogram._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.preprocessing.MelSpectrogram._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.preprocessing.MelSpectrogram._preprocess">
+<span class="sig-name descname"><span class="pre">_preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#src.preprocessing.MelSpectrogram._preprocess" title="Link to this definition"></a></dt>
+<dd><p>Compute the mel spectrogram of the input audio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>audio</strong> – The input audio.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The mel spectrogram of the audio.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -371,6 +528,25 @@ The labels are loaded from a separate CSV file.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">PitchShift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pitch_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.PitchShift" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.preprocessing.AbtractPreprocessor" title="src.preprocessing.AbtractPreprocessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbtractPreprocessor</span></code></a></p>
 <p>Preprocessor that performs pitch shifting on audio.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.preprocessing.PitchShift._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.preprocessing.PitchShift._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.preprocessing.PitchShift._preprocess">
+<span class="sig-name descname"><span class="pre">_preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#src.preprocessing.PitchShift._preprocess" title="Link to this definition"></a></dt>
+<dd><p>Perform the pitch shifting on the input audio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>audio</strong> – The input audio.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The pitch-shifted audio.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -393,6 +569,25 @@ followed by a <cite>PitchShift</cite> operation.</p>
     by a <cite>PitchShift</cite> operation.</p>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.preprocessing.PreprocessingPipeline._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.preprocessing.PreprocessingPipeline._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.preprocessing.PreprocessingPipeline._preprocess">
+<span class="sig-name descname"><span class="pre">_preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#src.preprocessing.PreprocessingPipeline._preprocess" title="Link to this definition"></a></dt>
+<dd><p>Preprocess the input text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – The input text.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The preprocessed text.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -400,6 +595,25 @@ followed by a <cite>PitchShift</cite> operation.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">RandomCrop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.RandomCrop" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.preprocessing.CentreCrop" title="src.preprocessing.CentreCrop"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentreCrop</span></code></a></p>
 <p>Preprocessor that performs random cropping on images.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.preprocessing.RandomCrop._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#src.preprocessing.RandomCrop._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.preprocessing.RandomCrop._preprocess">
+<span class="sig-name descname"><span class="pre">_preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img:</span> <span class="pre">&lt;module</span> <span class="pre">'PIL.Image'</span> <span class="pre">from</span> <span class="pre">'/home/nick/.envs/oop-final/lib/python3.10/site-packages/PIL/Image.py'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#src.preprocessing.RandomCrop._preprocess" title="Link to this definition"></a></dt>
+<dd><p>Perform the random cropping on the input image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>img</strong> – The input image.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cropped image as a NumPy array.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>

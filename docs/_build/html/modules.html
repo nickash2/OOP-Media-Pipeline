@@ -97,6 +97,9 @@
 <li class="toctree-l2"><a class="reference internal" href="src.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="src.html#module-src.abstract_dataset">src.abstract_dataset module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset"><code class="docutils literal notranslate"><span class="pre">AbstractDataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset._abc_impl"><code class="docutils literal notranslate"><span class="pre">AbstractDataset._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset._load_data"><code class="docutils literal notranslate"><span class="pre">AbstractDataset._load_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset._load_labels"><code class="docutils literal notranslate"><span class="pre">AbstractDataset._load_labels()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.load_data_eager"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.load_data_eager()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.load_data_lazy"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.load_data_lazy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.abstract_dataset.AbstractDataset.split"><code class="docutils literal notranslate"><span class="pre">AbstractDataset.split()</span></code></a></li>
@@ -117,31 +120,67 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="src.html#module-src.dataset">src.dataset module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="src.html#src.dataset.Dataset"><code class="docutils literal notranslate"><span class="pre">Dataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset._abc_impl"><code class="docutils literal notranslate"><span class="pre">Dataset._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset._load_data"><code class="docutils literal notranslate"><span class="pre">Dataset._load_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset._load_labels"><code class="docutils literal notranslate"><span class="pre">Dataset._load_labels()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset.load_data_eager"><code class="docutils literal notranslate"><span class="pre">Dataset.load_data_eager()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset.load_data_lazy"><code class="docutils literal notranslate"><span class="pre">Dataset.load_data_lazy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.Dataset.split"><code class="docutils literal notranslate"><span class="pre">Dataset.split()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src.html#src.dataset.HierarchicalDataset"><code class="docutils literal notranslate"><span class="pre">HierarchicalDataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.HierarchicalDataset._abc_impl"><code class="docutils literal notranslate"><span class="pre">HierarchicalDataset._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.HierarchicalDataset._load_labels"><code class="docutils literal notranslate"><span class="pre">HierarchicalDataset._load_labels()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.HierarchicalDataset.load_data_eager"><code class="docutils literal notranslate"><span class="pre">HierarchicalDataset.load_data_eager()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.HierarchicalDataset.load_data_lazy"><code class="docutils literal notranslate"><span class="pre">HierarchicalDataset.load_data_lazy()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src.html#src.dataset.LabeledDataset"><code class="docutils literal notranslate"><span class="pre">LabeledDataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.LabeledDataset._abc_impl"><code class="docutils literal notranslate"><span class="pre">LabeledDataset._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.LabeledDataset._load_labels"><code class="docutils literal notranslate"><span class="pre">LabeledDataset._load_labels()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.LabeledDataset.load_data_eager"><code class="docutils literal notranslate"><span class="pre">LabeledDataset.load_data_eager()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.LabeledDataset.load_data_lazy"><code class="docutils literal notranslate"><span class="pre">LabeledDataset.load_data_lazy()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="src.html#src.dataset.UnlabeledDataset"><code class="docutils literal notranslate"><span class="pre">UnlabeledDataset</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.dataset.UnlabeledDataset"><code class="docutils literal notranslate"><span class="pre">UnlabeledDataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.UnlabeledDataset._abc_impl"><code class="docutils literal notranslate"><span class="pre">UnlabeledDataset._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.dataset.UnlabeledDataset._load_labels"><code class="docutils literal notranslate"><span class="pre">UnlabeledDataset._load_labels()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="src.html#module-src.preprocessing">src.preprocessing module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.AbtractPreprocessor"><code class="docutils literal notranslate"><span class="pre">AbtractPreprocessor</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop"><code class="docutils literal notranslate"><span class="pre">CentreCrop</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.PitchShift"><code class="docutils literal notranslate"><span class="pre">PitchShift</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.RandomCrop"><code class="docutils literal notranslate"><span class="pre">RandomCrop</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.AbtractPreprocessor"><code class="docutils literal notranslate"><span class="pre">AbtractPreprocessor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.AbtractPreprocessor._abc_impl"><code class="docutils literal notranslate"><span class="pre">AbtractPreprocessor._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.AbtractPreprocessor._preprocess"><code class="docutils literal notranslate"><span class="pre">AbtractPreprocessor._preprocess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop"><code class="docutils literal notranslate"><span class="pre">CentreCrop</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop._abc_impl"><code class="docutils literal notranslate"><span class="pre">CentreCrop._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop._check_valid_size"><code class="docutils literal notranslate"><span class="pre">CentreCrop._check_valid_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.CentreCrop._preprocess"><code class="docutils literal notranslate"><span class="pre">CentreCrop._preprocess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram._abc_impl"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.MelSpectrogram._preprocess"><code class="docutils literal notranslate"><span class="pre">MelSpectrogram._preprocess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.PitchShift"><code class="docutils literal notranslate"><span class="pre">PitchShift</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PitchShift._abc_impl"><code class="docutils literal notranslate"><span class="pre">PitchShift._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PitchShift._preprocess"><code class="docutils literal notranslate"><span class="pre">PitchShift._preprocess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline._abc_impl"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.PreprocessingPipeline._preprocess"><code class="docutils literal notranslate"><span class="pre">PreprocessingPipeline._preprocess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocessing.RandomCrop"><code class="docutils literal notranslate"><span class="pre">RandomCrop</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.RandomCrop._abc_impl"><code class="docutils literal notranslate"><span class="pre">RandomCrop._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.html#src.preprocessing.RandomCrop._preprocess"><code class="docutils literal notranslate"><span class="pre">RandomCrop._preprocess()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="src.html#module-src">Module contents</a></li>
