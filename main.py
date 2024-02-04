@@ -199,13 +199,13 @@ def main() -> None:
 
     # # Comment these as you wish to demonstrate discarding
     print("Checking batches with and without discarding")
-    # batchloader_discarding(age_data, discard=True)
-    # batchloader_discarding(age_data, discard=False)
+    batchloader_discarding(age_data, discard=True)
+    batchloader_discarding(age_data, discard=False)
 
     # Compares the first element of each batch
     # when shuffle=True and shuffle=False
     print("Comparing batches with and without shuffling")
-    # is_batch_shuffling(digits_data)
+    is_batch_shuffling(digits_data)
 
     # Example of a preprocessing pipeline for audio
     print("Example of a preprocessing pipeline for audio")

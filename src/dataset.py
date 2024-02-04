@@ -38,7 +38,7 @@ class Dataset(AbstractDataset):
         super().__init__(root, data_type)
         try:
             self._data_paths = [os.path.join(root, file)
-                               for file in os.listdir(root)]
+                                for file in os.listdir(root)]
         except FileNotFoundError:
             raise FileNotFoundError(f"No such directory: {root}")
 
