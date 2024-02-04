@@ -197,18 +197,18 @@ Notice that, for images and audio, showing means actually plotting some sample i
 
 1. [x] Create an image dataset and an audio dataset. Show how you can access your data. You may also plot some images using the `matplotlib.pyplot.imshow` method.
 
-- Showcase a dataset with and without labels.
-- Showcase a dataset for classification and regression.
-- Showcase a lazy and an eager dataloader
-- Build your datasets on top of whichever data you like (at least 100 data points); for the images, ensure that they have a size of at least 128 × 128 pixels.
+[x] Showcase a dataset with and without labels.
+[x] Showcase a dataset for classification and regression.
+[x] Showcase a lazy and an eager dataloader
+[x] Build your datasets on top of whichever data you like (at least 100 data points); for the images, ensure that they have a size of at least 128 × 128 pixels.
   - To look for datasets, you can use tools like [Kaggle](kaggle.com), [PapersWithCode](paperswithcode.com), [Google Datasets](https://datasetsearch.research.google.com/), and [the Irvine Machine Learning Repository](https://archive.ics.uci.edu/).
   - You are even allowed to create your own dataset with the aforementioned requirements.
   - Be careful about the labels: you want simple labels and you want to find examples of both regression and classification datasets:
     - For images: object detection and segmentation are **not** image classification tasks; regression tasks can be, e.g., age estimation.
     - For audio: be careful not to use datasets for speech-to-text or other Natural Language Processing-related tasks (the labels are more complicated in this case); regression tasks can be for example [tempo estimation](https://github.com/CPJKU/BallroomAnnotations/blob/master/README.md).
 
-2. [ ] Create a BatchLoader on top of two of these datasets (one for image, one for audio). Show its functionality with and without shuffling, with and without option to discard the last batch.
-3. [ ] Create a pipeline of preprocessing steps, one for audio, one for images:
+2. [x] Create a BatchLoader on top of two of these datasets (one for image, one for audio). Show its functionality with and without shuffling, with and without option to discard the last batch.
+3. [x] Create a pipeline of preprocessing steps, one for audio, one for images:
 
 - Show how you can apply the pipeline on top of a BatchLoader output.
   ```python
