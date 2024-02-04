@@ -34,13 +34,31 @@ class Dataset(AbstractDataset):
             raise TypeError("data_type must be a string")
         if not isinstance(dataloader, DataLoader):
             raise TypeError("dataloader must be a DataLoader type")
-        self.dataloader = dataloader
+        self._dataloader = dataloader
         super().__init__(root, data_type)
         try:
-            self.data_paths = [os.path.join(root, file)
+            self._data_paths = [os.path.join(root, file)
                                for file in os.listdir(root)]
         except FileNotFoundError:
             raise FileNotFoundError(f"No such directory: {root}")
+
+    @property
+    def dataloader(self):
+        return self._dataloader
+
+    @dataloader.setter
+    def dataloader(self, value):
+        if not isinstance(value, DataLoader):
+            raise TypeError("dataloader must be a DataLoader type")
+        self._dataloader = value
+
+    @property
+    def data_paths(self):
+        return self._data_paths
+
+    @data_paths.setter
+    def data_paths(self):
+        return self._data_paths
 
     def _load_labels(self) -> Dict[str, Any]:
         """
@@ -58,7 +76,7 @@ class Dataset(AbstractDataset):
         Returns:
         int: The number of data files in the dataset.
         """
-        return len(self.data_paths)
+        return len(self._data_paths)
 
     def __getitem__(self, idx: int) -> Tuple[np.array, str]:
         """
@@ -90,7 +108,7 @@ class Dataset(AbstractDataset):
         Returns:
             dict: A dictionary mapping filenames to data points.
         """
-        return self.dataloader.load_data_eager()
+        return self._dataloader.load_data_eager()
 
     def load_data_lazy(self) -> Generator:
         """
@@ -99,7 +117,7 @@ class Dataset(AbstractDataset):
         Yields:
             Any: The next data point in the dataset.
         """
-        return self.dataloader.load_data_lazy()
+        return self._dataloader.load_data_lazy()
 
     def _load_data(self, file_path: str) -> np.array | Tuple[np.array, int]:
         """
@@ -111,7 +129,7 @@ class Dataset(AbstractDataset):
         Returns:
         Any: The loaded data point.
         """
-        return self.dataloader._load_data(file_path)
+        return self._dataloader._load_data(file_path)
 
     def split(self, ratio: float) -> Tuple[np.array, np.array]:
         """
@@ -147,8 +165,8 @@ class LabeledDataset(Dataset):
         label_file (str): The path to the CSV file containing the labels.
         data_type (str): The type of data in the dataset.
         """
-        self.root = root
-        self.label_file = label_file
+        self._root = root
+        self._label_file = label_file
         labels = self._load_labels()
         super().__init__(
             root,
@@ -164,7 +182,7 @@ class LabeledDataset(Dataset):
         Returns:
         dict: A dictionary mapping filenames to labels.
         """
-        path = os.path.join(self.root, self.label_file)
+        path = os.path.join(self._root, self._label_file)
         try:
             with open(path, "r"):
                 df = pd.read_csv(path, header=None)
@@ -215,7 +233,7 @@ class UnlabeledDataset(Dataset):
         root (str): The path to the directory containing the data files.
         data_type (str): The type of data in the dataset.
         """
-        self.root = root
+        self._root = root
         super().__init__(
             root,
             data_type,
@@ -229,7 +247,7 @@ class UnlabeledDataset(Dataset):
         Returns:
         dict: A dictionary mapping filenames to None.
         """
-        return {file: None for file in os.listdir(self.root)}
+        return {file: None for file in os.listdir(self._root)}
 
 
 class HierarchicalDataset(Dataset):
@@ -248,7 +266,7 @@ class HierarchicalDataset(Dataset):
         root (str): The path to the directory containing the data files.
         data_type (str): The type of data in the dataset.
         """
-        self.root = root
+        self._root = root
         self.labels = self._load_labels()
         super().__init__(
             root,
@@ -267,12 +285,12 @@ class HierarchicalDataset(Dataset):
         """
         labels = {}
         try:
-            for class_folder in os.listdir(self.root):
-                class_path = os.path.join(self.root, class_folder)
+            for class_folder in os.listdir(self._root):
+                class_path = os.path.join(self._root, class_folder)
                 if os.path.isdir(class_path):
                     labels[class_folder] = sorted(os.listdir(class_path))
         except FileNotFoundError:
-            raise FileNotFoundError(f"No such directory: {self.root}")
+            raise FileNotFoundError(f"No such directory: {self._root}")
         return labels
 
     def __len__(self) -> int:

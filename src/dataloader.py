@@ -157,7 +157,8 @@ class LabeledDataLoader(DataLoader):
                     file_path = os.path.join(dir_path, file_name)
                     data = self._load_data(file_path)
                     file_name_no_extension, _ = os.path.splitext(file_name)
-                    yield (np.array(data), self._labels[file_name_no_extension])
+                    yield (np.array(data),
+                           self._labels[file_name_no_extension])
 
 
 class HierarchicalDataLoader(DataLoader):
