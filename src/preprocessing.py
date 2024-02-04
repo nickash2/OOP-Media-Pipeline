@@ -18,7 +18,7 @@ class AbtractPreprocessor(ABC):
         Args:
             hyperparameters: A list of hyperparameters.
         """
-        self.hyperparameters = []
+        self._hyperparameters = []
 
     @abstractmethod
     def __call__(self, text):
@@ -70,8 +70,32 @@ class CentreCrop(AbtractPreprocessor):
         if width <= 0 or height <= 0:
             raise ValueError("width and height must be greater than zero")
 
-        self.width_param = width
-        self.height_param = height
+        self._width_param = width
+        self._height_param = height
+
+    @property
+    def width_param(self):
+        return self._width_param
+
+    @width_param.setter
+    def width_param(self, value):
+        if not isinstance(value, int):
+            raise TypeError("width_param must be an integer")
+        if value <= 0:
+            raise ValueError("width_param must be greater than zero")
+        self._width_param = value
+
+    @property
+    def height_param(self):
+        return self._height_param
+
+    @height_param.setter
+    def height_param(self, value):
+        if not isinstance(value, int):
+            raise TypeError("height_param must be an integer")
+        if value <= 0:
+            raise ValueError("height_param must be greater than zero")
+        self._height_param = value
 
     def __call__(self, img: Union[Image.Image, np.ndarray]) -> Image.Image:
         """
@@ -92,7 +116,7 @@ class CentreCrop(AbtractPreprocessor):
         elif not isinstance(img, Image.Image):
             raise TypeError("img must be an Image (PIL) object")
 
-        self.real_width, self.real_height = img.size
+        self._real_width, self._real_height = img.size
         self.img = self._preprocess(img)
         return self.img
 
@@ -106,8 +130,8 @@ class CentreCrop(AbtractPreprocessor):
         Returns:
             True if the image has valid size for cropping, False otherwise.
         """
-        if (self.width_param < self.real_width and
-                self.height_param < self.real_height):
+        if (self._width_param < self._real_width and
+                self._height_param < self._real_height):
             return True
 
     def _preprocess(self, img: Image) -> np.ndarray:
@@ -123,10 +147,10 @@ class CentreCrop(AbtractPreprocessor):
         if not self._check_valid_size(img):
             return np.array(img)
 
-        left = max(0, (self.real_width - self.width_param) / 2)
-        top = max(0, (self.real_height - self.height_param) / 2)
-        right = min(self.real_width, left + self.width_param)
-        bottom = min(self.real_height, top + self.height_param)
+        left = max(0, (self._real_width - self._width_param) / 2)
+        top = max(0, (self._real_height - self._height_param) / 2)
+        right = min(self._real_width, left + self._width_param)
+        bottom = min(self._real_height, top + self._height_param)
 
         return np.array(img.crop((left, top, right, bottom)))
 
@@ -159,10 +183,10 @@ class RandomCrop(CentreCrop):
         if not self._check_valid_size(img):
             return np.array(img)
 
-        left = np.random.randint(0, self.real_width - self.width_param + 1)
-        top = np.random.randint(0, self.real_height - self.height_param + 1)
-        right = left + self.width_param
-        bottom = top + self.height_param
+        left = np.random.randint(0, self._real_width - self._width_param + 1)
+        top = np.random.randint(0, self._real_height - self._height_param + 1)
+        right = left + self._width_param
+        bottom = top + self._height_param
         return np.array(img.crop((left, top, right, bottom)))
 
 
@@ -177,11 +201,27 @@ class PitchShift(AbtractPreprocessor):
         Initialize the PitchShift preprocessor.
 
         Args:
-            pitch_factor: The pitch shifting factor.
+            _pitch_factor: The pitch shifting factor.
             sample_rate: The sample rate of the audio.
         """
-        self.pitch_factor = pitch_factor
-        self.sample_rate = sample_rate
+        self._pitch_factor = pitch_factor
+        self._sample_rate = sample_rate
+
+    @property
+    def pitch_factor(self):
+        return self._pitch_factor
+
+    @pitch_factor.setter
+    def pitch_factor(self, value):
+        self._pitch_factor = value
+
+    @property
+    def sample_rate(self):
+        return self._sample_rate
+
+    @sample_rate.setter
+    def sample_rate(self, value):
+        self._sample_rate = value
 
     def __call__(self, audio: np.ndarray) -> np.ndarray:
         """
@@ -207,7 +247,7 @@ class PitchShift(AbtractPreprocessor):
             The pitch-shifted audio.
         """
         shifted = librosa.effects.pitch_shift(
-            y=audio, sr=self.sample_rate, n_steps=self.pitch_factor
+            y=audio, sr=self._sample_rate, n_steps=self._pitch_factor
         )
         return shifted
 
@@ -225,8 +265,24 @@ class MelSpectrogram(AbtractPreprocessor):
             sample_rate: The sample rate of the audio.
             file_name: The name of the file to save the spectrogram image.
         """
-        self.sample_rate = sample_rate
-        self.file_name = file_name
+        self._sample_rate = sample_rate
+        self._file_name = file_name
+
+    @property
+    def sample_rate(self) -> float:
+        return self._sample_rate
+
+    @sample_rate.setter
+    def sample_rate(self, value: float) -> None:
+        self._sample_rate = value
+
+    @property
+    def file_name(self) -> str:
+        return self._file_name
+
+    @file_name.setter
+    def file_name(self, value: str) -> None:
+        self._file_name = value
 
     def __call__(self, audio: np.ndarray) -> np.ndarray:
         """
@@ -251,7 +307,7 @@ class MelSpectrogram(AbtractPreprocessor):
         Returns:
             The mel spectrogram of the audio.
         """
-        mel = librosa.feature.melspectrogram(y=audio, sr=self.sample_rate)
+        mel = librosa.feature.melspectrogram(y=audio, sr=self._sample_rate)
         plt.figure(figsize=(10, 4))
         librosa.display.specshow(
             librosa.power_to_db(mel, ref=np.max),
@@ -262,8 +318,8 @@ class MelSpectrogram(AbtractPreprocessor):
         plt.colorbar(format="%+2.0f dB")
         plt.title("Mel spectrogram")
         plt.tight_layout()
-        if self.file_name:
-            plt.savefig(self.file_name)
+        if self._file_name:
+            plt.savefig(self._file_name)
         plt.close()
         return mel
 
@@ -293,19 +349,65 @@ class PreprocessingPipeline(AbtractPreprocessor):
     """
 
     def __init__(self, preprocessors: List[AbtractPreprocessor]):
-        self.preprocessors = preprocessors
+        """
+        Initialize the PreprocessingPipeline.
+
+        Parameters
+        ----------
+        preprocessors : List[AbtractPreprocessor]
+            The preprocessors to apply.
+        """
+        self._preprocessors = preprocessors
+        self._data = None
 
     def __call__(self, data: np.ndarray) -> np.ndarray:
-        self.data = self._preprocess(data)
-        return self.data
+        """
+        Apply the preprocessing pipeline to the input data.
+
+        Parameters
+        ----------
+        data : np.ndarray
+            The input audio data.
+
+        Returns:
+            np.ndarray: The preprocessed audio data.
+        """
+        self._data = self._preprocess(data)
+        return self._data
+
+    @property
+    def preprocessors(self) -> List[AbtractPreprocessor]:
+        return self._preprocessors
+
+    @preprocessors.setter
+    def preprocessors(self, value: List[AbtractPreprocessor]) -> None:
+        self._preprocessors = value
+
+    @property
+    def data(self) -> np.ndarray:
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
 
     def _preprocess(self, data: np.ndarray) -> np.ndarray:
-        for i, preprocessor in enumerate(self.preprocessors):
+        """
+        Apply the preprocessors in the pipeline to the input data.
+
+        Parameters
+        ----------
+        data : np.ndarray
+            The input audio data.
+
+        Returns: np.ndarray The preprocessed audio data.
+        """
+        for i, preprocessor in enumerate(self._preprocessors):
             # Check if a MelSpectrogram is followed by a PitchShift operation
             if (
                 isinstance(preprocessor, MelSpectrogram)
-                and i < len(self.preprocessors) - 1
-                and isinstance(self.preprocessors[i + 1], PitchShift)
+                and i < len(self._preprocessors) - 1
+                and isinstance(self._preprocessors[i + 1], PitchShift)
             ):
                 raise ValueError(
                     "A MelSpectrogram operation cannot be"
