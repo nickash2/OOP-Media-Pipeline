@@ -138,38 +138,78 @@
 <span id="src-batchloader-module"></span><h2>src.batchloader module<a class="headerlink" href="#module-src.batchloader" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="src.batchloader.BatchLoader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.batchloader.</span></span><span class="sig-name descname"><span class="pre">BatchLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequential</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.batchloader.BatchLoader" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.batchloader.</span></span><span class="sig-name descname"><span class="pre">BatchLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discard_last</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.batchloader.BatchLoader" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class for loading data in batches.</p>
+<p>A class used to create batches of data.</p>
+<p>…</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.batchloader.BatchLoader.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#src.batchloader.BatchLoader.data" title="Link to this definition"></a></dt>
+<dd><p>a numpy array containing the data to be batched</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>np.ndarray</em>) – The list of data to load.</p></li>
-<li><p><strong>batch_size</strong> (<em>int</em>) – The size of each batch.</p></li>
-<li><p><strong>file_type</strong> (<em>str</em>) – The type of files to load (‘image’ or ‘audio’).</p></li>
-<li><p><strong>shuffle</strong> (<em>bool</em>) – Whether to shuffle the data.</p></li>
-<li><p><strong>sequential</strong> (<em>bool</em>) – Whether to load the data sequentially.</p></li>
-</ul>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.batchloader.BatchLoader.batch_size">
+<span class="sig-name descname"><span class="pre">batch_size</span></span><a class="headerlink" href="#src.batchloader.BatchLoader.batch_size" title="Link to this definition"></a></dt>
+<dd><p>the size of the batches to be created</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.batchloader.BatchLoader.shuffle">
+<span class="sig-name descname"><span class="pre">shuffle</span></span><a class="headerlink" href="#src.batchloader.BatchLoader.shuffle" title="Link to this definition"></a></dt>
+<dd><p>a flag used to determine whether to shuffle
+the data before batching (default is True)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.batchloader.BatchLoader.discard_last">
+<span class="sig-name descname"><span class="pre">discard_last</span></span><a class="headerlink" href="#src.batchloader.BatchLoader.discard_last" title="Link to this definition"></a></dt>
+<dd><p>a flag used to determine whether to discard the
+last batch if it’s smaller than batch_size (default is False)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.batchloader.BatchLoader.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><a class="headerlink" href="#src.batchloader.BatchLoader.indices" title="Link to this definition"></a></dt>
+<dd><p>a numpy array containing the indices of the data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
-<dt class="sig sig-object py" id="src.batchloader.BatchLoader.create_batches">
-<span class="sig-name descname"><span class="pre">create_batches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discard_last_batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#src.batchloader.BatchLoader.create_batches" title="Link to this definition"></a></dt>
-<dd><p>Creates the batches of data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>discard_last_batch</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to discard</p></li>
-<li><p><strong>size.</strong> (<em>the last batch if its size is less than the batch</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The batches of data.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__len__():</span></span></dt>
+<dd><p>Returns the number of batches that can be created
+from the data with the specified batch size.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__iter__():</span></span></dt>
+<dd><p>Returns an iterator that yields batches of data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -284,7 +324,7 @@ The labels are loaded from a separate CSV file.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.dataset.LabeledDataset.load_data_lazy">
-<span class="sig-name descname"><span class="pre">load_data_lazy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.LabeledDataset.load_data_lazy" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load_data_lazy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.dataset.LabeledDataset.load_data_lazy" title="Link to this definition"></a></dt>
 <dd><p>Load the data and labels lazily.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields<span class="colon">:</span></dt>
@@ -335,7 +375,7 @@ The labels are loaded from a separate CSV file.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="src.preprocessing.PreprocessingPipeline">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">PreprocessingPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">preprocessors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.PreprocessingPipeline" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">PreprocessingPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preprocessors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#src.preprocessing.AbtractPreprocessor" title="src.preprocessing.AbtractPreprocessor"><span class="pre">AbtractPreprocessor</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.PreprocessingPipeline" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.preprocessing.AbtractPreprocessor" title="src.preprocessing.AbtractPreprocessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbtractPreprocessor</span></code></a></p>
 <p>A pipeline for preprocessing audio data.</p>
 <p>This pipeline applies a series of preprocessing operations to
