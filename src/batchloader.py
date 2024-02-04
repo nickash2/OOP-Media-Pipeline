@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Iterator
+from typing import Generator
 
 
 class BatchLoader:
@@ -84,7 +84,7 @@ class BatchLoader:
             return ((self.data.shape[0] + self.batch_size - 1)
                     // self.batch_size)
 
-    def __iter__(self) -> Iterator[np.ndarray]:
+    def __iter__(self) -> Generator[np.ndarray, None, None]:
         if self.shuffle:
             try:
                 np.random.shuffle(self.indices)
@@ -102,40 +102,3 @@ class BatchLoader:
                 raise RuntimeError(
                     "An error occurred while creating a batch"
                     ) from e
-
-
-def __len__(self):
-    """
-    Returns the number of batches that can be
-    created from the data with the specified batch size.
-
-    Returns
-    -------
-    int
-        the number of batches
-    """
-    if self.discard_last and self.data.shape[0] % self.batch_size != 0:
-        return self.data.shape[0] // self.batch_size
-    else:
-        return ((self.data.shape[0] + self.batch_size - 1)
-                // self.batch_size)
-
-
-def __iter__(self):
-    if self.shuffle:
-        try:
-            np.random.shuffle(self.indices)
-        except Exception as e:
-            raise RuntimeError(
-                "An error occurred while shuffling the indices"
-            ) from e
-    for i in range(0, len(self.indices), self.batch_size):
-        batch_idx = self.indices[i: i + self.batch_size]
-        if self.discard_last and len(batch_idx) < self.batch_size:
-            break
-        try:
-            yield self.data[batch_idx]
-        except Exception as e:
-            raise RuntimeError(
-                "An error occurred while creating a batch"
-                ) from e
