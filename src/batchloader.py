@@ -62,11 +62,48 @@ class BatchLoader:
             raise ValueError("shuffle must be a boolean")
         if not isinstance(discard_last, bool):
             raise ValueError("discard_last must be a boolean")
-        self.data = data
-        self.batch_size = batch_size
-        self.shuffle = shuffle
-        self.discard_last = discard_last
-        self.indices = np.arange(data.shape[0])
+        self._data = data
+        self._batch_size = batch_size
+        self._shuffle = shuffle
+        self._discard_last = discard_last
+        self._indices = np.arange(data.shape[0])
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+        self._indices = np.arange(value.shape[0])  # Update indices
+
+    @property
+    def batch_size(self):
+        return self._batch_size
+
+    @batch_size.setter
+    def batch_size(self, value):
+        self._batch_size = value
+
+    @property
+    def shuffle(self):
+        return self._shuffle
+
+    @shuffle.setter
+    def shuffle(self, value):
+        self._shuffle = value
+
+    @property
+    def discard_last(self):
+        return self._discard_last
+
+    @discard_last.setter
+    def discard_last(self, value):
+        self._discard_last = value
+
+    @property
+    def indices(self):
+        return self._indices
 
     def __len__(self) -> int:
         """
@@ -78,26 +115,26 @@ class BatchLoader:
         int
             the number of batches
         """
-        if self.discard_last and self.data.shape[0] % self.batch_size != 0:
-            return self.data.shape[0] // self.batch_size
+        if self._discard_last and self._data.shape[0] % self._batch_size != 0:
+            return self._data.shape[0] // self.batch_size
         else:
-            return ((self.data.shape[0] + self.batch_size - 1)
+            return ((self._data.shape[0] + self._batch_size - 1)
                     // self.batch_size)
 
     def __iter__(self) -> Generator[np.ndarray, None, None]:
-        if self.shuffle:
+        if self._shuffle:
             try:
-                np.random.shuffle(self.indices)
+                np.random.shuffle(self._indices)
             except Exception as e:
                 raise RuntimeError(
                     "An error occurred while shuffling the indices"
                 ) from e
-        for i in range(0, len(self.indices), self.batch_size):
-            batch_idx = self.indices[i: i + self.batch_size]
-            if self.discard_last and len(batch_idx) < self.batch_size:
+        for i in range(0, len(self._indices), self.batch_size):
+            batch_idx = self._indices[i: i + self.batch_size]
+            if self._discard_last and len(batch_idx) < self.batch_size:
                 break
             try:
-                yield self.data[batch_idx]
+                yield self._data[batch_idx]
             except Exception as e:
                 raise RuntimeError(
                     "An error occurred while creating a batch"
