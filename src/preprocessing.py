@@ -165,9 +165,8 @@ class RandomCrop(CentreCrop):
         bottom = top + self.height_param
         return np.array(img.crop((left, top, right, bottom)))
 
+
 # Audio
-
-
 class PitchShift(AbtractPreprocessor):
     """
     Preprocessor that performs pitch shifting on audio.
