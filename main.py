@@ -220,7 +220,7 @@ def main() -> None:
         ],
     )
 
-    # # Example of a preprocessing pipeline for imgs
+    # Example of a preprocessing pipeline for imgs
     print("Example of a preprocessing pipeline for imgs")
 
     pipeline_example_batches(
