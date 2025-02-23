@@ -1,27 +1,11 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/7tKtmpw_)
-[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-7f7980b617ed060a017424585567c406b6ee15c891e84e1186181d67ecf80aa0.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=13285475)
-# Object-Oriented Programming for AI 2023-24 - final project requirements
+# Object-Oriented Programming Media (Pre)processing w/ documentation
 
-In this final project, you will be required to implement a complex application in Python using the OOP concept explained in the course.
 The project will need to contain the following elements:
 
 - An implementation of a hierarchy of classes to manage datasets, mainly with Machine Learning as an end goal.
 - A dataset wrapper, called `BatchLoader`, which handles the creation of batches of data for training a model.
 - A set of preprocessing tools for image and audio data.
 
-The deadline for the project is set on **Sunday February 4th, 2024 23:59 CET**, without exceptions.
-
-This project is designed to be carried out in pairs.
-The way you split the load is up to you; however, you should ensure that both team members' load is approximately equal.
-
-The final product will need to be submitted as a **private** GitHub repository with the following structure:
-
-- A `report.md` file at the root of your folder. The readme is to function as a submission report and a documentation for the usage of your code.
-  - Here you should specify your implementation choices (e.g., why something has been implemented as a private/public attribute instead of a method argument, why you decided to create an intermediate class, why you chose to have an attribute public instead of private...).
-  - Also, at the beginning of the report, you should detail how the workload was split between the two members.
-- A `requirements.txt` file, listing all the dependencies of your project. This is to be formatted according to the [pip requirements file format](https://note.nkmk.me/en/python-pip-install-requirements/).
-- A folder `src` containing all of the code for your library.
-- A `main.py` file at the root of your folder. Here you should showcase an example of usage of your library.
 
 ## Git instructions
 
